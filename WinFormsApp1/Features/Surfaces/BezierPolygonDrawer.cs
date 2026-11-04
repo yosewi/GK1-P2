@@ -7,7 +7,8 @@ namespace WinFormsApp1.Features.Surfaces
     ///  - 16 punktów kontrolnych jako małe kółka,
     ///  - linie łączące sąsiednie punkty w każdym wierszu i w każdej kolumnie siatki 4 x 4.
     ///
-    /// Rysujemy rzut prostokątny na płaszczyznę xy: bierzemy tylko x i y punktu, a z pomijamy.
+    /// Rysujemy punkty PO obrocie sceny i robimy rzut prostokątny na płaszczyznę xy:
+    /// bierzemy tylko x i y obróconego punktu, a z pomijamy.
     /// Graphics musi mieć już ustawioną transformację do współrzędnych świata (ScreenMapper).
     /// </summary>
     public static class BezierPolygonDrawer
@@ -16,7 +17,7 @@ namespace WinFormsApp1.Features.Surfaces
 
         public static void Draw(Graphics g, BezierSurface surface, Color color)
         {
-            Vector3[,] points = surface.ControlPoints;
+            Vector3[,] points = surface.RotatedControlPoints;
             int n = BezierSurface.PointsPerSide;
 
             using Pen linePen = new Pen(color, 1f);
