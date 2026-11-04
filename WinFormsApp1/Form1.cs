@@ -37,8 +37,24 @@ namespace WinFormsApp1
             // Treść zadania: plik należy wczytać podczas uruchamiania programu.
             LoadSurfaces(DefaultSurfacesPath);
 
+            ConnectControls();
+
             _canvas.FrameRecreated += (sender, e) => Redraw();
             _canvas.RecreateFrame();
+        }
+
+        /// <summary>
+        /// Łączy kontrolki z panelu z ustawieniami rysowania.
+        /// Każda zmiana kontrolki: zapisz nową wartość, narysuj klatkę od nowa.
+        /// </summary>
+        private void ConnectControls()
+        {
+            _sceneRenderer.ShowBezierPolygon = _controlPanel.BezierPolygonCheckBox.Checked;
+            _controlPanel.BezierPolygonCheckBox.CheckedChanged += (sender, e) =>
+            {
+                _sceneRenderer.ShowBezierPolygon = _controlPanel.BezierPolygonCheckBox.Checked;
+                Redraw();
+            };
         }
 
         /// <summary>
@@ -66,7 +82,7 @@ namespace WinFormsApp1
                 return;
             }
 
-            _sceneRenderer.Render(_canvas.Frame);
+            _sceneRenderer.Render(_canvas.Frame, _scene);
             _canvas.Invalidate();
         }
     }

@@ -3,6 +3,30 @@
   "WorkspaceRootPath": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|c:\\users\\julian.sowinski\\desktop\\gkp2\\winformsapp1\\rendering\\screenmapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|solutionrelative:rendering\\screenmapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|c:\\users\\julian.sowinski\\desktop\\gkp2\\winformsapp1\\rendering\\directbitmap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|solutionrelative:rendering\\directbitmap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|c:\\users\\julian.sowinski\\desktop\\gkp2\\winformsapp1\\features\\surfaces\\surfacefilereader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|solutionrelative:features\\surfaces\\surfacefilereader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|c:\\users\\julian.sowinski\\desktop\\gkp2\\winformsapp1\\features\\surfaces\\beziersurface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|solutionrelative:features\\surfaces\\beziersurface.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|c:\\users\\julian.sowinski\\desktop\\gkp2\\winformsapp1\\features\\scene\\scenemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|solutionrelative:features\\scene\\scenemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|c:\\users\\julian.sowinski\\desktop\\gkp2\\winformsapp1\\data\\surfaces.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|solutionrelative:data\\surfaces.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|c:\\users\\julian.sowinski\\desktop\\gkp2\\winformsapp1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D4A5AA61-D5E2-133F-C6F5-C1FAED315F32}|WinFormsApp1.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -31,19 +55,97 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "ScreenMapper.cs",
+              "DocumentMoniker": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Rendering\\ScreenMapper.cs",
+              "RelativeDocumentMoniker": "Rendering\\ScreenMapper.cs",
+              "ToolTip": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Rendering\\ScreenMapper.cs",
+              "RelativeToolTip": "Rendering\\ScreenMapper.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T19:50:05.774Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DirectBitmap.cs",
+              "DocumentMoniker": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Rendering\\DirectBitmap.cs",
+              "RelativeDocumentMoniker": "Rendering\\DirectBitmap.cs",
+              "ToolTip": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Rendering\\DirectBitmap.cs",
+              "RelativeToolTip": "Rendering\\DirectBitmap.cs",
+              "ViewState": "AgIAADsAAAAAAAAAAAAswAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T19:50:01.763Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SurfaceFileReader.cs",
+              "DocumentMoniker": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Features\\Surfaces\\SurfaceFileReader.cs",
+              "RelativeDocumentMoniker": "Features\\Surfaces\\SurfaceFileReader.cs",
+              "ToolTip": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Features\\Surfaces\\SurfaceFileReader.cs",
+              "RelativeToolTip": "Features\\Surfaces\\SurfaceFileReader.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T19:49:54.668Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BezierSurface.cs",
+              "DocumentMoniker": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Features\\Surfaces\\BezierSurface.cs",
+              "RelativeDocumentMoniker": "Features\\Surfaces\\BezierSurface.cs",
+              "ToolTip": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Features\\Surfaces\\BezierSurface.cs",
+              "RelativeToolTip": "Features\\Surfaces\\BezierSurface.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T19:49:49.859Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SceneModel.cs",
+              "DocumentMoniker": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Features\\Scene\\SceneModel.cs",
+              "RelativeDocumentMoniker": "Features\\Scene\\SceneModel.cs",
+              "ToolTip": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Features\\Scene\\SceneModel.cs",
+              "RelativeToolTip": "Features\\Scene\\SceneModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T19:49:42.676Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "surfaces.txt",
+              "DocumentMoniker": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Data\\surfaces.txt",
+              "RelativeDocumentMoniker": "Data\\surfaces.txt",
+              "ToolTip": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Data\\surfaces.txt",
+              "RelativeToolTip": "Data\\surfaces.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-11-04T19:49:36.499Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
               "ToolTip": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Form1.cs",
               "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAADwvy4AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAwwFkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-11-04T19:19:01.04Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 7,
               "Title": "Form1.cs [Projekt]",
               "DocumentMoniker": "C:\\Users\\julian.sowinski\\Desktop\\gkp2\\WinFormsApp1\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
