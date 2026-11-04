@@ -1,3 +1,4 @@
+using WinFormsApp1.Features.Rotation;
 using WinFormsApp1.Features.Scene;
 using WinFormsApp1.Features.Surfaces;
 using WinFormsApp1.UI;
@@ -19,6 +20,7 @@ namespace WinFormsApp1
         private readonly ControlPanel _controlPanel = new ControlPanel();
         private readonly SceneModel _scene = new SceneModel();
         private readonly SceneRenderer _sceneRenderer = new SceneRenderer();
+        private MouseRotationController? _mouseRotation;
 
         public Form1()
         {
@@ -34,10 +36,15 @@ namespace WinFormsApp1
             Controls.Add(_canvas);
             _canvas.BringToFront();
 
+            // Widok startowy z ukosa (dalej będziemy go zmieniać myszą).
+            _scene.Orientation.SetDefaultView();
+
             // Treść zadania: plik należy wczytać podczas uruchamiania programu.
+            // (SetSurfaces od razu obraca wczytane punkty według aktualnej orientacji.)
             LoadSurfaces(DefaultSurfacesPath);
 
             ConnectControls();
+            ConnectMouseRotation();
 
             _canvas.FrameRecreated += (sender, e) => Redraw();
             _canvas.RecreateFrame();
@@ -53,6 +60,20 @@ namespace WinFormsApp1
             _controlPanel.BezierPolygonCheckBox.CheckedChanged += (sender, e) =>
             {
                 _sceneRenderer.ShowBezierPolygon = _controlPanel.BezierPolygonCheckBox.Checked;
+                Redraw();
+            };
+        }
+
+        /// <summary>
+        /// Przeciąganie myszą po obszarze rysowania obraca scenę.
+        /// Po każdym ruchu: przelicz obrócone punkty, narysuj klatkę od nowa.
+        /// </summary>
+        private void ConnectMouseRotation()
+        {
+            _mouseRotation = new MouseRotationController(_canvas, _scene.Orientation);
+            _mouseRotation.OrientationChanged += (sender, e) =>
+            {
+                _scene.ApplyOrientation();
                 Redraw();
             };
         }
