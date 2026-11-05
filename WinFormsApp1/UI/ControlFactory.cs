@@ -6,13 +6,16 @@ namespace WinFormsApp1.UI
     /// </summary>
     public static class ControlFactory
     {
+        /// <summary>Jedna wspólna (pogrubiona) czcionka dla wszystkich nagłówków panelu.</summary>
+        private static readonly Font HeaderFont = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
+
         public static Label AddHeader(Control parent, string text)
         {
             Label label = new Label
             {
                 Text = text,
                 AutoSize = true,
-                Font = new Font(SystemFonts.DefaultFont, FontStyle.Bold),
+                Font = HeaderFont,
                 Margin = new Padding(0, 10, 0, 2),
             };
             parent.Controls.Add(label);

@@ -9,7 +9,8 @@ namespace WinFormsApp1.Features.Rotation
     ///
     /// Jak ruch myszy zamienia się na obrót (obracamy wokół osi EKRANU):
     ///   - ruch w poziomie (dx) -> obrót wokół pionowej osi ekranu (y),
-    ///   - ruch w pionie   (dy) -> obrót wokół poziomej osi ekranu (x).
+    ///   - ruch w pionie   (dy) -> obrót wokół poziomej osi ekranu (x),
+    ///   - kółko myszy (scroll) -> obrót wokół osi z (prostopadłej do ekranu).
     /// Kąt jest proporcjonalny do przesunięcia: kąt = dx · czułość (lub dy · czułość).
     /// Znaki są dobrane tak, żeby przednia część sceny (bliżej nas) "jechała" za kursorem,
     /// jakbyśmy chwycili kulę i ją obracali.
@@ -18,6 +19,12 @@ namespace WinFormsApp1.Features.Rotation
     {
         /// <summary>Ile radianów obrotu na jeden piksel ruchu myszy (0.01 rad ≈ 0.57°).</summary>
         private const float RadiansPerPixel = 0.01f;
+
+        /// <summary>Obrót wokół osi z na jeden "ząbek" kółka myszy: 5°.</summary>
+        private static readonly float RadiansPerWheelNotch = SceneOrientation.DegreesToRadians(5);
+
+        /// <summary>Windows podaje obrót kółka w jednostkach: jeden ząbek = 120.</summary>
+        private const float WheelDeltaPerNotch = 120f;
 
         private readonly SceneOrientation _orientation;
         private bool _isDragging;
@@ -33,6 +40,29 @@ namespace WinFormsApp1.Features.Rotation
             control.MouseDown += OnMouseDown;
             control.MouseMove += OnMouseMove;
             control.MouseUp += OnMouseUp;
+            control.MouseWheel += OnMouseWheel;
+
+            // Kółko myszy trafia do kontrolki, która ma "fokus". Gdyby fokus miał np. suwak
+            // z panelu, scroll nad sceną przesuwałby suwak. Dlatego gdy kursor wjeżdża nad scenę,
+            // zabieramy fokus kontrolkom panelu.
+            control.MouseEnter += (sender, e) =>
+            {
+                Form? form = control.FindForm();
+                if (form != null)
+                {
+                    form.ActiveControl = null;
+                }
+            };
+        }
+
+        private void OnMouseWheel(object? sender, MouseEventArgs e)
+        {
+            // e.Delta > 0: kółko do góry -> obrót przeciwnie do ruchu wskazówek zegara
+            // (dodatni kąt wokół osi z, która wychodzi z ekranu w naszą stronę).
+            float notches = e.Delta / WheelDeltaPerNotch;
+            _orientation.RotateAroundScreenZ(notches * RadiansPerWheelNotch);
+
+            OrientationChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnMouseDown(object? sender, MouseEventArgs e)

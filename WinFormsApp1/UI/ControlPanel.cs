@@ -1,3 +1,6 @@
+using WinFormsApp1.Features.Scene;
+using WinFormsApp1.Features.Triangulation;
+
 namespace WinFormsApp1.UI
 {
     /// <summary>
@@ -11,6 +14,9 @@ namespace WinFormsApp1.UI
     {
         public const int PanelWidth = 260;
         private const int ItemWidth = PanelWidth - 40;
+
+        /// <summary>Największa dokładność triangulacji na suwaku (najmniejsza to MeshBuilder.MinSteps).</summary>
+        private const int MaxSteps = 60;
 
         // --- Triangulation ---
         public TrackBar StepsTrackBar { get; }
@@ -55,7 +61,8 @@ namespace WinFormsApp1.UI
             BackColor = SystemColors.Control;
 
             ControlFactory.AddHeader(this, "Triangulation");
-            StepsTrackBar = ControlFactory.AddTrackBar(this, "Steps", 1, 60, 10, ItemWidth, FormatInteger);
+            StepsTrackBar = ControlFactory.AddTrackBar(this, "Steps",
+                MeshBuilder.MinSteps, MaxSteps, SceneModel.DefaultSteps, ItemWidth, FormatInteger);
 
             ControlFactory.AddHeader(this, "Display");
             BezierPolygonCheckBox = ControlFactory.AddCheckBox(this, "Bezier polygon", true);

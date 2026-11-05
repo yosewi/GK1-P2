@@ -12,6 +12,7 @@ namespace WinFormsApp1.Features.Scene
     /// </summary>
     public sealed class SceneModel
     {
+        /// <summary>Dokładność triangulacji na starcie programu (także początkowa wartość suwaka "Steps").</summary>
         public const int DefaultSteps = 10;
 
         public List<SceneSurface> Surfaces { get; } = new List<SceneSurface>();
@@ -30,8 +31,6 @@ namespace WinFormsApp1.Features.Scene
             {
                 Surfaces.Add(new SceneSurface(surface, Steps));
             }
-
-            ApplyOrientation();
         }
 
         /// <summary>Zmienia dokładność triangulacji i buduje wszystkie siatki od nowa.</summary>
@@ -42,14 +41,12 @@ namespace WinFormsApp1.Features.Scene
             {
                 sceneSurface.RebuildMesh(steps);
             }
-
-            // Nowe wierzchołki trzeba obrócić według aktualnej orientacji.
-            ApplyOrientation();
         }
 
         /// <summary>
-        /// Przelicza wszystko, co się obraca, według aktualnej orientacji.
-        /// Wołamy po każdej zmianie orientacji (np. po ruchu myszą).
+        /// Przelicza wszystko, co się obraca (punkty kontrolne i wierzchołki siatek),
+        /// według aktualnej orientacji. Wołamy raz na klatkę, tuż przed rysowaniem -
+        /// dzięki temu nowe siatki i każda zmiana orientacji są zawsze uwzględnione.
         /// </summary>
         public void ApplyOrientation()
         {
