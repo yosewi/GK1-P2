@@ -39,43 +39,59 @@ namespace WinFormsApp1
             // Widok startowy z ukosa (dalej będziemy go zmieniać myszą).
             _scene.Orientation.SetDefaultView();
 
-            // Treść zadania: plik należy wczytać podczas uruchamiania programu.
-            // (SetSurfaces od razu obraca wczytane punkty według aktualnej orientacji.)
-            LoadSurfaces(DefaultSurfacesPath);
-
+            // Najpierw podłączamy kontrolki (m.in. ustawiają dokładność triangulacji z suwaka),
+            // dopiero potem wczytujemy plik - wtedy siatki od razu powstają z właściwą dokładnością.
             ConnectControls();
             ConnectMouseRotation();
 
-            _canvas.FrameRecreated += (sender, e) => Redraw();
-            _canvas.RecreateFrame();
+            // Treść zadania: plik należy wczytać podczas uruchamiania programu.
+            // (SetSurfaces od razu buduje siatki i obraca wszystko według aktualnej orientacji.)
+            LoadSurfaces(DefaultSurfacesPath);
+
+            // Klatkę rysujemy tylko wtedy, gdy obszar rysowania o to poprosi (patrz RenderCanvas).
+            _canvas.RenderFrame += (sender, e) => RenderFrame();
+            _canvas.RequestRedraw();
         }
 
         /// <summary>
         /// Łączy kontrolki z panelu z ustawieniami rysowania.
-        /// Każda zmiana kontrolki: zapisz nową wartość, narysuj klatkę od nowa.
+        /// Każda zmiana kontrolki: zapisz nową wartość i poproś o przerysowanie.
         /// </summary>
         private void ConnectControls()
         {
+            // --- Triangulation: suwak "Steps" ---
+            _scene.SetSteps(_controlPanel.StepsTrackBar.Value);
+            _controlPanel.StepsTrackBar.ValueChanged += (sender, e) =>
+            {
+                _scene.SetSteps(_controlPanel.StepsTrackBar.Value);
+                _canvas.RequestRedraw();
+            };
+
+            // --- Display: checkboxy ---
             _sceneRenderer.ShowBezierPolygon = _controlPanel.BezierPolygonCheckBox.Checked;
             _controlPanel.BezierPolygonCheckBox.CheckedChanged += (sender, e) =>
             {
                 _sceneRenderer.ShowBezierPolygon = _controlPanel.BezierPolygonCheckBox.Checked;
-                Redraw();
+                _canvas.RequestRedraw();
+            };
+
+            _sceneRenderer.ShowTriangleMesh = _controlPanel.TriangleMeshCheckBox.Checked;
+            _controlPanel.TriangleMeshCheckBox.CheckedChanged += (sender, e) =>
+            {
+                _sceneRenderer.ShowTriangleMesh = _controlPanel.TriangleMeshCheckBox.Checked;
+                _canvas.RequestRedraw();
             };
         }
 
         /// <summary>
-        /// Przeciąganie myszą po obszarze rysowania obraca scenę.
-        /// Po każdym ruchu: przelicz obrócone punkty, narysuj klatkę od nowa.
+        /// Przeciąganie myszą i scroll po obszarze rysowania obracają scenę.
+        /// Ruch myszy zmienia tylko macierz orientacji (to szybkie) i prosi o przerysowanie.
+        /// Wierzchołki obracamy dopiero przy rysowaniu klatki - raz na klatkę, a nie przy każdym ruchu myszy.
         /// </summary>
         private void ConnectMouseRotation()
         {
             _mouseRotation = new MouseRotationController(_canvas, _scene.Orientation);
-            _mouseRotation.OrientationChanged += (sender, e) =>
-            {
-                _scene.ApplyOrientation();
-                Redraw();
-            };
+            _mouseRotation.OrientationChanged += (sender, e) => _canvas.RequestRedraw();
         }
 
         /// <summary>
@@ -96,15 +112,19 @@ namespace WinFormsApp1
             }
         }
 
-        private void Redraw()
+        /// <summary>
+        /// Rysuje jedną klatkę: obraca scenę według aktualnej orientacji i rysuje ją do bitmapy.
+        /// Wołane przez RenderCanvas tuż przed pokazaniem klatki na ekranie.
+        /// </summary>
+        private void RenderFrame()
         {
             if (_canvas.Frame == null)
             {
                 return;
             }
 
+            _scene.ApplyOrientation();
             _sceneRenderer.Render(_canvas.Frame, _scene);
-            _canvas.Invalidate();
         }
     }
 }
