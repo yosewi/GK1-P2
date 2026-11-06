@@ -34,6 +34,8 @@ namespace BezierSurfaces.Features.Scene
 
         public bool ShowBezierPolygon { get; set; } = true;
 
+        private DepthBuffer? _depthBuffer;
+
         public void Render(DirectBitmap frame, SceneModel scene)
         {
             ScreenMapper mapper = new ScreenMapper(frame.Width, frame.Height);
@@ -48,13 +50,27 @@ namespace BezierSurfaces.Features.Scene
             DrawLines(frame, mapper, scene);
         }
 
-        private static void DrawFilledTriangles(DirectBitmap frame, ScreenMapper mapper, SceneModel scene)
+        private void DrawFilledTriangles(DirectBitmap frame, ScreenMapper mapper, SceneModel scene)
         {
+            DepthBuffer depthBuffer = GetClearedDepthBuffer(frame.Width, frame.Height);
+
             for (int index = 0; index < scene.Surfaces.Count; index++)
             {
                 Color fillColor = SurfaceFillColors[index % SurfaceFillColors.Length];
-                SolidColorMeshFiller.Fill(frame, mapper, scene.Surfaces[index].Mesh, fillColor);
+                SolidColorMeshFiller.Fill(frame, depthBuffer, mapper, scene.Surfaces[index].Mesh, fillColor);
             }
+        }
+
+        private DepthBuffer GetClearedDepthBuffer(int width, int height)
+        {
+            if (_depthBuffer == null || _depthBuffer.Width != width || _depthBuffer.Height != height)
+            {
+                _depthBuffer = new DepthBuffer(width, height);
+                return _depthBuffer;
+            }
+
+            _depthBuffer.Clear();
+            return _depthBuffer;
         }
 
         private void DrawLines(DirectBitmap frame, ScreenMapper mapper, SceneModel scene)
