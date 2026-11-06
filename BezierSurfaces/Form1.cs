@@ -61,6 +61,13 @@ namespace BezierSurfaces
                 _sceneRenderer.ShowTriangleMesh = _controlPanel.TriangleMeshCheckBox.Checked;
                 _canvas.RequestRedraw();
             };
+
+            _sceneRenderer.ShowFilledTriangles = _controlPanel.FilledTrianglesCheckBox.Checked;
+            _controlPanel.FilledTrianglesCheckBox.CheckedChanged += (sender, e) =>
+            {
+                _sceneRenderer.ShowFilledTriangles = _controlPanel.FilledTrianglesCheckBox.Checked;
+                _canvas.RequestRedraw();
+            };
         }
 
         private void ConnectMouseRotation()

@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace BezierSurfaces.Rendering
 {
     public sealed class ScreenMapper
@@ -11,11 +13,9 @@ namespace BezierSurfaces.Rendering
             CenterY = height / 2f;
         }
 
-        public Point ToPixel(float x, float y)
+        public Vector2 ToScreen(Vector3 worldPoint)
         {
-            int px = (int)MathF.Round(CenterX + x);
-            int py = (int)MathF.Round(CenterY - y);
-            return new Point(px, py);
+            return new Vector2(CenterX + worldPoint.X, CenterY - worldPoint.Y);
         }
 
         public void ApplyWorldTransform(Graphics g)

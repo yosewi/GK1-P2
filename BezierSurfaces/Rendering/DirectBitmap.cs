@@ -39,6 +39,24 @@ namespace BezierSurfaces.Rendering
             Pixels[y * Width + x] = color.ToArgb();
         }
 
+        public void FillRow(int y, int xFrom, int xTo, Color color)
+        {
+            if (y < 0 || y >= Height)
+            {
+                return;
+            }
+
+            int firstX = Math.Max(xFrom, 0);
+            int lastX = Math.Min(xTo, Width - 1);
+            int argb = color.ToArgb();
+            int rowStart = y * Width;
+
+            for (int x = firstX; x <= lastX; x++)
+            {
+                Pixels[rowStart + x] = argb;
+            }
+        }
+
         public void Clear(Color color)
         {
             Array.Fill(Pixels, color.ToArgb());

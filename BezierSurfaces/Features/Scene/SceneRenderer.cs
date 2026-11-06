@@ -1,4 +1,5 @@
 using System.Drawing.Drawing2D;
+using BezierSurfaces.Features.Filling;
 using BezierSurfaces.Features.Surfaces;
 using BezierSurfaces.Features.Triangulation;
 using BezierSurfaces.Rendering;
@@ -17,7 +18,17 @@ namespace BezierSurfaces.Features.Scene
             Color.SteelBlue,
         };
 
+        private static readonly Color[] SurfaceFillColors =
+        {
+            Color.LightGreen,
+            Color.Plum,
+            Color.NavajoWhite,
+            Color.LightSteelBlue,
+        };
+
         private const int MeshAlpha = 110;
+
+        public bool ShowFilledTriangles { get; set; }
 
         public bool ShowTriangleMesh { get; set; } = true;
 
@@ -29,9 +40,27 @@ namespace BezierSurfaces.Features.Scene
 
             frame.Clear(BackgroundColor);
 
+            if (ShowFilledTriangles)
+            {
+                DrawFilledTriangles(frame, mapper, scene);
+            }
+
+            DrawLines(frame, mapper, scene);
+        }
+
+        private static void DrawFilledTriangles(DirectBitmap frame, ScreenMapper mapper, SceneModel scene)
+        {
+            for (int index = 0; index < scene.Surfaces.Count; index++)
+            {
+                Color fillColor = SurfaceFillColors[index % SurfaceFillColors.Length];
+                SolidColorMeshFiller.Fill(frame, mapper, scene.Surfaces[index].Mesh, fillColor);
+            }
+        }
+
+        private void DrawLines(DirectBitmap frame, ScreenMapper mapper, SceneModel scene)
+        {
             using Graphics g = Graphics.FromImage(frame.Bitmap);
             mapper.ApplyWorldTransform(g);
-
             g.SmoothingMode = SmoothingMode.None;
 
             for (int index = 0; index < scene.Surfaces.Count; index++)
