@@ -58,3 +58,6 @@ nunit-*.xml
 
 # Visual Studio
 .vs/
+
+# Osobiste ustawienia Visual Studio
+*.user
