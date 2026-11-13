@@ -42,6 +42,12 @@ namespace BezierSurfaces.Mathematics
             return weights.X * valueA + weights.Y * valueB + weights.Z * valueC;
         }
 
+        // To samo dla wektorów, np. wektorów normalnych w wierzchołkach.
+        public static Vector3 Interpolate(Vector3 weights, Vector3 valueA, Vector3 valueB, Vector3 valueC)
+        {
+            return weights.X * valueA + weights.Y * valueB + weights.Z * valueC;
+        }
+
         // Podwojone pole trójkąta ze znakiem (znak zależy od kolejności wierzchołków).
         private static float DoubleSignedArea(Vector2 p, Vector2 q, Vector2 r)
         {

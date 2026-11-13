@@ -21,6 +21,12 @@ namespace BezierSurfaces.Rendering
             return new Vector2(CenterX + worldPoint.X, CenterY - worldPoint.Y);
         }
 
+        // Odwrotność ToScreen: z piksela ekranu i głębokości z odtwarza punkt sceny.
+        public Vector3 ToWorld(float screenX, float screenY, float z)
+        {
+            return new Vector3(screenX - CenterX, CenterY - screenY, z);
+        }
+
         // To samo przejście ze sceny na ekran, ale dla linii rysowanych przez Graphics:
         public void ApplyWorldTransform(Graphics g)
         {

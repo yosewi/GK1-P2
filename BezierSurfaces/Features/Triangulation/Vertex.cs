@@ -1,5 +1,6 @@
 using System.Numerics;
 using BezierSurfaces.Features.Rotation;
+using BezierSurfaces.Mathematics;
 
 namespace BezierSurfaces.Features.Triangulation
 {
@@ -36,7 +37,7 @@ namespace BezierSurfaces.Features.Triangulation
             RotatedPosition = Position;
             RotatedTangentU = TangentU;
             RotatedTangentV = TangentV;
-            RotatedNormal = SafeNormalize(Normal);
+            RotatedNormal = VectorMath.SafeNormalize(Normal);
         }
 
         // Obraca wierzchołek bieżącym obrotem sceny, zawsze zaczynając od wartości oryginalnych.
@@ -48,14 +49,7 @@ namespace BezierSurfaces.Features.Triangulation
             RotatedTangentV = orientation.RotateDirection(TangentV);
 
             // Normalną po obrocie skracamy do długości 1, bo taką będzie potrzebować oświetlenie.
-            RotatedNormal = SafeNormalize(orientation.RotateDirection(Normal));
-        }
-
-        // Skraca wektor do długości 1.
-        private static Vector3 SafeNormalize(Vector3 vector)
-        {
-            const float MinLength = 1e-6f;
-            return vector.Length() < MinLength ? Vector3.UnitZ : Vector3.Normalize(vector);
+            RotatedNormal = VectorMath.SafeNormalize(orientation.RotateDirection(Normal));
         }
     }
 }
