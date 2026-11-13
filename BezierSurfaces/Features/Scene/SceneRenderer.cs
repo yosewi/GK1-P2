@@ -4,6 +4,8 @@ using BezierSurfaces.Features.Filling;
 using BezierSurfaces.Features.Surfaces;
 using BezierSurfaces.Features.Triangulation;
 using BezierSurfaces.Rendering;
+using System.Numerics;
+using BezierSurfaces.Features.Lighting;
 
 namespace BezierSurfaces.Features.Scene
 {
@@ -67,13 +69,15 @@ namespace BezierSurfaces.Features.Scene
             DrawLines(frame, mapper, scene);
         }
 
-        // Wypełnia trójkąty wszystkich powierzchni.
+        // Wypełnia trójkąty wszystkich powierzchni kolorem z modelu oświetlenia.
+        // Każda powierzchnia ma swój kolor obiektu, światło jest wspólne.
         private static void DrawFilledTriangles(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, SceneModel scene)
         {
             for (int index = 0; index < scene.Surfaces.Count; index++)
             {
-                Color fillColor = SurfaceFillColors[index % SurfaceFillColors.Length];
-                SolidColorMeshFiller.Fill(pixels, depthBuffer, mapper, scene.Surfaces[index].Mesh, fillColor);
+                Vector3 objectColor = LightingModel.FromColor(SurfaceFillColors[index % SurfaceFillColors.Length]);
+                LitMeshFiller.Fill(pixels, depthBuffer, mapper, scene.Surfaces[index].Mesh,
+                    scene.Lighting, scene.Light.Position, objectColor);
             }
         }
 

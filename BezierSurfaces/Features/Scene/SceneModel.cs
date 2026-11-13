@@ -1,5 +1,6 @@
 using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Surfaces;
+using BezierSurfaces.Features.Lighting;
 
 namespace BezierSurfaces.Features.Scene
 {
@@ -17,6 +18,12 @@ namespace BezierSurfaces.Features.Scene
 
         // Bieżąca dokładność triangulacji, ustawiana suwakiem.
         public int Steps { get; private set; } = DefaultSteps;
+
+        // Współczynniki i kolor światła modelu oświetlenia, wspólne dla wszystkich powierzchni.
+        public LightingModel Lighting { get; } = new LightingModel();
+
+        // Źródło światła.
+        public LightSource Light { get; } = new LightSource();
 
         // Zastępuje powierzchnie nowymi i od razu buduje dla nich siatki.
         public void SetSurfaces(IEnumerable<BezierSurface> surfaces)
