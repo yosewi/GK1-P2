@@ -7,8 +7,7 @@ namespace BezierSurfaces
 {
     public partial class Form1 : Form
     {
-        private static readonly string DefaultSurfacesPath =
-            Path.Combine(AppContext.BaseDirectory, "Data", "surfaces.txt");
+        private static readonly string DefaultSurfacesPath = Path.Combine(AppContext.BaseDirectory, "Data", "surfaces.txt");
 
         private readonly RenderCanvas _canvas = new RenderCanvas();
         private readonly ControlPanel _controlPanel = new ControlPanel();
@@ -20,7 +19,7 @@ namespace BezierSurfaces
         {
             InitializeComponent();
 
-            Text = "Bezier Surfaces - Triangles & Lighting";
+            Text = "Bezier Surfaces";
             ClientSize = new Size(1200, 800);
             MinimumSize = new Size(800, 600);
 

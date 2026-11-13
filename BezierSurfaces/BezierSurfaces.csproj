@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FastBitmapLib" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Data\surfaces.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -1,4 +1,5 @@
 using System.Drawing.Drawing2D;
+using FastBitmapLib;
 using BezierSurfaces.Features.Filling;
 using BezierSurfaces.Features.Surfaces;
 using BezierSurfaces.Features.Triangulation;
@@ -36,28 +37,32 @@ namespace BezierSurfaces.Features.Scene
 
         private DepthBuffer? _depthBuffer;
 
-        public void Render(DirectBitmap frame, SceneModel scene)
+        public void Render(Bitmap frame, SceneModel scene)
         {
-            ScreenMapper mapper = new ScreenMapper(frame.Width, frame.Height);
+            int width = frame.Width;
+            int height = frame.Height;
+            ScreenMapper mapper = new ScreenMapper(width, height);
 
-            frame.Clear(BackgroundColor);
-
-            if (ShowFilledTriangles)
+            using (FastBitmap pixels = frame.FastLock())
             {
-                DrawFilledTriangles(frame, mapper, scene);
+                pixels.Clear(BackgroundColor);
+
+                if (ShowFilledTriangles)
+                {
+                    DepthBuffer depthBuffer = GetClearedDepthBuffer(width, height);
+                    DrawFilledTriangles(pixels, depthBuffer, mapper, scene);
+                }
             }
 
             DrawLines(frame, mapper, scene);
         }
 
-        private void DrawFilledTriangles(DirectBitmap frame, ScreenMapper mapper, SceneModel scene)
+        private static void DrawFilledTriangles(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, SceneModel scene)
         {
-            DepthBuffer depthBuffer = GetClearedDepthBuffer(frame.Width, frame.Height);
-
             for (int index = 0; index < scene.Surfaces.Count; index++)
             {
                 Color fillColor = SurfaceFillColors[index % SurfaceFillColors.Length];
-                SolidColorMeshFiller.Fill(frame, depthBuffer, mapper, scene.Surfaces[index].Mesh, fillColor);
+                SolidColorMeshFiller.Fill(pixels, depthBuffer, mapper, scene.Surfaces[index].Mesh, fillColor);
             }
         }
 
@@ -73,9 +78,9 @@ namespace BezierSurfaces.Features.Scene
             return _depthBuffer;
         }
 
-        private void DrawLines(DirectBitmap frame, ScreenMapper mapper, SceneModel scene)
+        private void DrawLines(Bitmap frame, ScreenMapper mapper, SceneModel scene)
         {
-            using Graphics g = Graphics.FromImage(frame.Bitmap);
+            using Graphics g = Graphics.FromImage(frame);
             mapper.ApplyWorldTransform(g);
             g.SmoothingMode = SmoothingMode.None;
 

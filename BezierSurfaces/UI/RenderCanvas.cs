@@ -1,4 +1,4 @@
-using BezierSurfaces.Rendering;
+using System.Drawing.Imaging;
 
 namespace BezierSurfaces.UI
 {
@@ -6,7 +6,7 @@ namespace BezierSurfaces.UI
     {
         private bool _redrawRequested;
 
-        public DirectBitmap? Frame { get; private set; }
+        public Bitmap? Frame { get; private set; }
 
         public event EventHandler? RenderFrame;
 
@@ -48,8 +48,8 @@ namespace BezierSurfaces.UI
             Image = null;
             Frame?.Dispose();
 
-            Frame = new DirectBitmap(width, height);
-            Image = Frame.Bitmap;
+            Frame = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            Image = Frame;
 
             RequestRedraw();
         }

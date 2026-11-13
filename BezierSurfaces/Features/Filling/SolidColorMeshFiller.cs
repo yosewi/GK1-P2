@@ -1,4 +1,5 @@
 using System.Numerics;
+using FastBitmapLib;
 using BezierSurfaces.Features.Triangulation;
 using BezierSurfaces.Mathematics;
 using BezierSurfaces.Rendering;
@@ -7,15 +8,15 @@ namespace BezierSurfaces.Features.Filling
 {
     public static class SolidColorMeshFiller
     {
-        public static void Fill(DirectBitmap frame, DepthBuffer depthBuffer, ScreenMapper mapper, TriangleMesh mesh, Color color)
+        public static void Fill(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, TriangleMesh mesh, Color color)
         {
             foreach (Triangle triangle in mesh.Triangles)
             {
-                FillTriangle(frame, depthBuffer, mapper, triangle, color);
+                FillTriangle(pixels, depthBuffer, mapper, triangle, color);
             }
         }
 
-        private static void FillTriangle(DirectBitmap frame, DepthBuffer depthBuffer, ScreenMapper mapper, Triangle triangle, Color color)
+        private static void FillTriangle(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, Triangle triangle, Color color)
         {
             Vector2 a = mapper.ToScreen(triangle.A.RotatedPosition);
             Vector2 b = mapper.ToScreen(triangle.B.RotatedPosition);
@@ -40,7 +41,7 @@ namespace BezierSurfaces.Features.Filling
 
                     if (depthBuffer.TryUpdate(x, y, z))
                     {
-                        frame.SetPixel(x, y, color);
+                        pixels.SetPixel(x, y, color);
                     }
                 }
             });
