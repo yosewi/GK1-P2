@@ -10,5 +10,11 @@ namespace BezierSurfaces.Features.Lighting
 
         // Położenie światła. Na starcie nad środkiem sceny.
         public Vector3 Position { get; private set; } = new Vector3(0, 0, DefaultHeight);
+
+        // Zmienia wysokość źródła światła.
+        public void SetHeight(float z)
+        {
+            Position = new Vector3(Position.X, Position.Y, z);
+        }
     }
 }

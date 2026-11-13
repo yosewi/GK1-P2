@@ -70,6 +70,13 @@ namespace BezierSurfaces
                 _sceneRenderer.ShowFilledTriangles = _controlPanel.FilledTrianglesCheckBox.Checked;
                 _canvas.RequestRedraw();
             };
+
+            _scene.Light.SetHeight(_controlPanel.LightZTrackBar.Value);
+            _controlPanel.LightZTrackBar.ValueChanged += (sender, e) =>
+            {
+                _scene.Light.SetHeight(_controlPanel.LightZTrackBar.Value);
+                _canvas.RequestRedraw();
+            };
         }
 
         private void ConnectLightingControls()

@@ -13,6 +13,7 @@ namespace BezierSurfaces.UI
 
         private const int MinM = 1;
         private const int MaxM = 100;
+        private const int MaxLightHeight = 1000;
 
         public TrackBar StepsTrackBar { get; }
 
@@ -68,7 +69,8 @@ namespace BezierSurfaces.UI
             LightColorButton = ControlFactory.AddButton(this, "Light color...", ItemWidth);
 
             ControlFactory.AddHeader(this, "Light source");
-            LightZTrackBar = ControlFactory.AddTrackBar(this, "Light Z", 0, 1000, 500, ItemWidth, FormatInteger);
+            LightZTrackBar = ControlFactory.AddTrackBar(this, "Light Z", 0, MaxLightHeight,
+                LightSource.DefaultHeight, ItemWidth, FormatInteger);
             AnimateLightCheckBox = ControlFactory.AddCheckBox(this, "Animate light", true);
             ShowLightCurveCheckBox = ControlFactory.AddCheckBox(this, "Show light curve points", true);
 
