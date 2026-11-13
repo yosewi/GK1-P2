@@ -2,6 +2,7 @@ using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Scene;
 using BezierSurfaces.Features.Surfaces;
 using BezierSurfaces.UI;
+using BezierSurfaces.Features.Lighting;
 
 namespace BezierSurfaces
 {
@@ -36,6 +37,8 @@ namespace BezierSurfaces
 
             _canvas.RenderFrame += (sender, e) => RenderFrame();
             _canvas.RequestRedraw();
+
+            ConnectLightingControls();
         }
 
         private void ConnectControls()
@@ -65,6 +68,32 @@ namespace BezierSurfaces
             _controlPanel.FilledTrianglesCheckBox.CheckedChanged += (sender, e) =>
             {
                 _sceneRenderer.ShowFilledTriangles = _controlPanel.FilledTrianglesCheckBox.Checked;
+                _canvas.RequestRedraw();
+            };
+        }
+
+        private void ConnectLightingControls()
+        {
+            LightingModel lighting = _scene.Lighting;
+
+            lighting.Kd = ControlPanel.FromHundredths(_controlPanel.KdTrackBar.Value);
+            _controlPanel.KdTrackBar.ValueChanged += (sender, e) =>
+            {
+                lighting.Kd = ControlPanel.FromHundredths(_controlPanel.KdTrackBar.Value);
+                _canvas.RequestRedraw();
+            };
+
+            lighting.Ks = ControlPanel.FromHundredths(_controlPanel.KsTrackBar.Value);
+            _controlPanel.KsTrackBar.ValueChanged += (sender, e) =>
+            {
+                lighting.Ks = ControlPanel.FromHundredths(_controlPanel.KsTrackBar.Value);
+                _canvas.RequestRedraw();
+            };
+
+            lighting.M = _controlPanel.MTrackBar.Value;
+            _controlPanel.MTrackBar.ValueChanged += (sender, e) =>
+            {
+                lighting.M = _controlPanel.MTrackBar.Value;
                 _canvas.RequestRedraw();
             };
         }

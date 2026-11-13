@@ -1,5 +1,6 @@
 using BezierSurfaces.Features.Scene;
 using BezierSurfaces.Features.Triangulation;
+using BezierSurfaces.Features.Lighting;
 
 namespace BezierSurfaces.UI
 {
@@ -9,6 +10,9 @@ namespace BezierSurfaces.UI
         private const int ItemWidth = PanelWidth - 40;
 
         private const int MaxSteps = 60;
+
+        private const int MinM = 1;
+        private const int MaxM = 100;
 
         public TrackBar StepsTrackBar { get; }
 
@@ -55,9 +59,12 @@ namespace BezierSurfaces.UI
             FilledTrianglesCheckBox = ControlFactory.AddCheckBox(this, "Filled triangles", false);
 
             ControlFactory.AddHeader(this, "Lighting");
-            KdTrackBar = ControlFactory.AddTrackBar(this, "kd", 0, 100, 50, ItemWidth, FormatHundredths);
-            KsTrackBar = ControlFactory.AddTrackBar(this, "ks", 0, 100, 50, ItemWidth, FormatHundredths);
-            MTrackBar = ControlFactory.AddTrackBar(this, "m", 1, 100, 20, ItemWidth, FormatInteger);
+            KdTrackBar = ControlFactory.AddTrackBar(this, "kd", 0, 100,
+                ToHundredths(LightingModel.DefaultKd), ItemWidth, FormatHundredths);
+            KsTrackBar = ControlFactory.AddTrackBar(this, "ks", 0, 100,
+                ToHundredths(LightingModel.DefaultKs), ItemWidth, FormatHundredths);
+            MTrackBar = ControlFactory.AddTrackBar(this, "m", MinM, MaxM,
+                LightingModel.DefaultM, ItemWidth, FormatInteger);
             LightColorButton = ControlFactory.AddButton(this, "Light color...", ItemWidth);
 
             ControlFactory.AddHeader(this, "Light source");
@@ -78,6 +85,10 @@ namespace BezierSurfaces.UI
             ControlFactory.AddHeader(this, "File");
             LoadControlPointsButton = ControlFactory.AddButton(this, "Load control points...", ItemWidth);
         }
+
+        public static float FromHundredths(int value) => value / 100f;
+
+        private static int ToHundredths(float value) => (int)MathF.Round(value * 100);
 
         private static string FormatInteger(int value) => value.ToString();
 
