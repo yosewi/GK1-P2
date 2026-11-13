@@ -31,14 +31,13 @@ namespace BezierSurfaces
             _scene.Orientation.SetDefaultView();
 
             ConnectControls();
+            ConnectLightingControls();
             ConnectMouseRotation();
 
             LoadSurfaces(DefaultSurfacesPath);
 
             _canvas.RenderFrame += (sender, e) => RenderFrame();
             _canvas.RequestRedraw();
-
-            ConnectLightingControls();
         }
 
         private void ConnectControls()
@@ -70,13 +69,6 @@ namespace BezierSurfaces
                 _sceneRenderer.ShowFilledTriangles = _controlPanel.FilledTrianglesCheckBox.Checked;
                 _canvas.RequestRedraw();
             };
-
-            _scene.Light.SetHeight(_controlPanel.LightZTrackBar.Value);
-            _controlPanel.LightZTrackBar.ValueChanged += (sender, e) =>
-            {
-                _scene.Light.SetHeight(_controlPanel.LightZTrackBar.Value);
-                _canvas.RequestRedraw();
-            };
         }
 
         private void ConnectLightingControls()
@@ -101,6 +93,13 @@ namespace BezierSurfaces
             _controlPanel.MTrackBar.ValueChanged += (sender, e) =>
             {
                 lighting.M = _controlPanel.MTrackBar.Value;
+                _canvas.RequestRedraw();
+            };
+
+            _scene.Light.SetHeight(_controlPanel.LightZTrackBar.Value);
+            _controlPanel.LightZTrackBar.ValueChanged += (sender, e) =>
+            {
+                _scene.Light.SetHeight(_controlPanel.LightZTrackBar.Value);
                 _canvas.RequestRedraw();
             };
         }

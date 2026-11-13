@@ -41,7 +41,7 @@ namespace BezierSurfaces.Features.Lighting
             // Składowa zwierciadlana: odblask, gdy odbite światło leci prosto do obserwatora.
             float specular = MathF.Pow(MathF.Max(0, Vector3.Dot(ViewerDirection, reflected)), M);
 
-            // liczenie kolorów.
+            // Każda składowa koloru liczona osobno.
             Vector3 lightTimesObject = LightColor * objectColor;
             return Kd * diffuse * lightTimesObject + Ks * specular * lightTimesObject;
         }
