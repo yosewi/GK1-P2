@@ -102,6 +102,19 @@ namespace BezierSurfaces
                 _scene.Light.SetHeight(_controlPanel.LightZTrackBar.Value);
                 _canvas.RequestRedraw();
             };
+
+            _controlPanel.LightColorButton.Click += (sender, e) => ChooseLightColor();
+        }
+
+        private void ChooseLightColor()
+        {
+            using ColorDialog dialog = new ColorDialog { Color = LightingModel.ToColor(_scene.Lighting.LightColor) };
+
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                _scene.Lighting.LightColor = LightingModel.FromColor(dialog.Color);
+                _canvas.RequestRedraw();
+            }
         }
 
         private void ConnectMouseRotation()
