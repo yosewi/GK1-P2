@@ -1,3 +1,4 @@
+using System.Numerics;
 using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Scene;
 using BezierSurfaces.Features.Surfaces;
@@ -32,6 +33,7 @@ namespace BezierSurfaces
 
             ConnectControls();
             ConnectLightingControls();
+            ConnectObjectColorControls();
             ConnectMouseRotation();
 
             LoadSurfaces(DefaultSurfacesPath);
@@ -106,15 +108,36 @@ namespace BezierSurfaces
             _controlPanel.LightColorButton.Click += (sender, e) => ChooseLightColor();
         }
 
+        private void ConnectObjectColorControls()
+        {
+            _controlPanel.ChooseColorButton.Click += (sender, e) => ChooseObjectColor();
+        }
+
         private void ChooseLightColor()
         {
-            using ColorDialog dialog = new ColorDialog { Color = LightingModel.ToColor(_scene.Lighting.LightColor) };
-
-            if (dialog.ShowDialog(this) == DialogResult.OK)
+            if (TryPickColor(_scene.Lighting.LightColor, out Vector3 color))
             {
-                _scene.Lighting.LightColor = LightingModel.FromColor(dialog.Color);
+                _scene.Lighting.LightColor = color;
                 _canvas.RequestRedraw();
             }
+        }
+
+        private void ChooseObjectColor()
+        {
+            if (TryPickColor(_scene.ObjectColor, out Vector3 color))
+            {
+                _scene.ObjectColor = color;
+                _canvas.RequestRedraw();
+            }
+        }
+
+        private bool TryPickColor(Vector3 current, out Vector3 chosen)
+        {
+            using ColorDialog dialog = new ColorDialog { Color = LightingModel.ToColor(current) };
+
+            bool accepted = dialog.ShowDialog(this) == DialogResult.OK;
+            chosen = accepted ? LightingModel.FromColor(dialog.Color) : current;
+            return accepted;
         }
 
         private void ConnectMouseRotation()

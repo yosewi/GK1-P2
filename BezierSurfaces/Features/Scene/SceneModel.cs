@@ -1,3 +1,4 @@
+using System.Numerics;
 using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Surfaces;
 using BezierSurfaces.Features.Lighting;
@@ -24,6 +25,9 @@ namespace BezierSurfaces.Features.Scene
 
         // Źródło światła.
         public LightSource Light { get; } = new LightSource();
+
+        // Kolor obiektu, wspólny dla wszystkich powierzchni
+        public Vector3 ObjectColor { get; set; } = LightingModel.FromColor(Color.LightSteelBlue);
 
         // Zastępuje powierzchnie nowymi i od razu buduje dla nich siatki.
         public void SetSurfaces(IEnumerable<BezierSurface> surfaces)
