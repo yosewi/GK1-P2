@@ -65,7 +65,7 @@ namespace BezierSurfaces.Features.Scene
             foreach (SceneSurface surface in scene.Surfaces)
             {
                 LitMeshFiller.Fill(pixels, depthBuffer, mapper, surface.Mesh,
-                    scene.Lighting, scene.Light.Position, scene.ObjectColor);
+                    scene.Lighting, scene.Light.Position, scene.ObjectColor, scene.ActiveTexture);
             }
         }
 

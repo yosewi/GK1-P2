@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using FastBitmapLib;
 using BezierSurfaces.Features.Lighting;
+using BezierSurfaces.Features.Texturing;
 using BezierSurfaces.Features.Triangulation;
 using BezierSurfaces.Mathematics;
 using BezierSurfaces.Rendering;
@@ -12,18 +13,18 @@ namespace BezierSurfaces.Features.Filling
     {
         // Każdy trójkąt siatki wypełniamy niezależnie.
         public static void Fill(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, TriangleMesh mesh,
-            LightingModel lighting, Vector3 lightPosition, Vector3 objectColor)
+            LightingModel lighting, Vector3 lightPosition, Vector3 objectColor, Texture? texture)
         {
             foreach (Triangle triangle in mesh.Triangles)
             {
-                FillTriangle(pixels, depthBuffer, mapper, triangle, lighting, lightPosition, objectColor);
+                FillTriangle(pixels, depthBuffer, mapper, triangle, lighting, lightPosition, objectColor, texture);
             }
         }
 
         // Wypełnia jeden trójkąt. Dla każdego piksela wnętrza wyznacza głębokość i wektor normalny
         // z wartości w wierzchołkach, a potem kolor z modelu oświetlenia.
         private static void FillTriangle(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, Triangle triangle,
-            LightingModel lighting, Vector3 lightPosition, Vector3 objectColor)
+            LightingModel lighting, Vector3 lightPosition, Vector3 objectColor, Texture? texture)
         {
             // Wierzchołki po obrocie zamienione na piksele ekranu.
             Vector2 a = mapper.ToScreen(triangle.A.RotatedPosition);
@@ -47,6 +48,11 @@ namespace BezierSurfaces.Features.Filling
             Vector3 normalB = triangle.B.RotatedNormal;
             Vector3 normalC = triangle.C.RotatedNormal;
 
+            // Parametry u, v wierzchołków - z nich wyznaczamy miejsce na teksturze.
+            Vector2 parametersA = new Vector2(triangle.A.U, triangle.A.V);
+            Vector2 parametersB = new Vector2(triangle.B.U, triangle.B.V);
+            Vector2 parametersC = new Vector2(triangle.C.U, triangle.C.V);
+
             TriangleFiller.Fill(a, b, c, (y, xFrom, xTo) =>
             {
                 for (int x = xFrom; x <= xTo; x++)
@@ -68,7 +74,15 @@ namespace BezierSurfaces.Features.Filling
                     Vector3 point = mapper.ToWorld(x, y, z);
                     Vector3 toLight = VectorMath.SafeNormalize(lightPosition - point);
 
-                    Vector3 color = lighting.Compute(normal, toLight, objectColor);
+                    // Kolor obiektu w tym pikselu: z tekstury w miejscu (u, v) albo stały.
+                    Vector3 pixelObjectColor = objectColor;
+                    if (texture != null)
+                    {
+                        Vector2 parameters = BarycentricCoordinates.Interpolate(weights, parametersA, parametersB, parametersC);
+                        pixelObjectColor = texture.Sample(parameters.X, parameters.Y);
+                    }
+
+                    Vector3 color = lighting.Compute(normal, toLight, pixelObjectColor);
                     pixels.SetPixel(x, y, LightingModel.ToColor(color));
                 }
             });

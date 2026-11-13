@@ -1,6 +1,7 @@
 using System.Numerics;
 using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Surfaces;
+using BezierSurfaces.Features.Texturing;
 using BezierSurfaces.Features.Lighting;
 
 namespace BezierSurfaces.Features.Scene
@@ -28,6 +29,15 @@ namespace BezierSurfaces.Features.Scene
 
         // Kolor obiektu, wspólny dla wszystkich powierzchni
         public Vector3 ObjectColor { get; set; } = LightingModel.FromColor(Color.LightSteelBlue);
+
+        // Wczytana tekstura. Pusta, dopóki nie wczytamy żadnego obrazka.
+        public Texture? Texture { get; set; }
+
+        // Czy kolor obiektu brać z tekstury zamiast stałego koloru.
+        public bool UseTexture { get; set; }
+
+        // Tekstura, której trzeba użyć przy rysowaniu, albo null, gdy rysujemy stałym kolorem.
+        public Texture? ActiveTexture => UseTexture ? Texture : null;
 
         // Zastępuje powierzchnie nowymi i od razu buduje dla nich siatki.
         public void SetSurfaces(IEnumerable<BezierSurface> surfaces)
