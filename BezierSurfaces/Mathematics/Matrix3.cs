@@ -2,8 +2,10 @@ using System.Numerics;
 
 namespace BezierSurfaces.Mathematics
 {
+    // Macierz 3x3 do obrotów
     public readonly struct Matrix3
     {
+        // Elementy macierzy
         public readonly float R11, R12, R13;
         public readonly float R21, R22, R23;
         public readonly float R31, R32, R33;
@@ -18,20 +20,24 @@ namespace BezierSurfaces.Mathematics
             R31 = r31; R32 = r32; R33 = r33;
         }
 
+        // Macierz jednostkowa
         public static readonly Matrix3 Identity = new Matrix3(
             1, 0, 0,
             0, 1, 0,
             0, 0, 1);
 
+        // Buduje macierz z trzech wektorów wstawionych jako kolumny.
         public static Matrix3 FromColumns(Vector3 a, Vector3 b, Vector3 c) => new Matrix3(
             a.X, b.X, c.X,
             a.Y, b.Y, c.Y,
             a.Z, b.Z, c.Z);
 
+        // Kolumny macierzy.
         public Vector3 Column1 => new Vector3(R11, R21, R31);
         public Vector3 Column2 => new Vector3(R12, R22, R32);
         public Vector3 Column3 => new Vector3(R13, R23, R33);
 
+        // Obrót o kąt w radianach wokół osi x
         public static Matrix3 RotationX(float angle)
         {
             float c = MathF.Cos(angle);
@@ -42,6 +48,7 @@ namespace BezierSurfaces.Mathematics
                 0, s, c);
         }
 
+        // Obrót o kąt w radianach wokół osi y
         public static Matrix3 RotationY(float angle)
         {
             float c = MathF.Cos(angle);
@@ -52,6 +59,7 @@ namespace BezierSurfaces.Mathematics
                 -s, 0, c);
         }
 
+        // Obrót o kąt w radianach wokół osi z
         public static Matrix3 RotationZ(float angle)
         {
             float c = MathF.Cos(angle);
@@ -62,6 +70,7 @@ namespace BezierSurfaces.Mathematics
                 0, 0, 1);
         }
 
+        // Obraca punkt lub wektor
         public static Vector3 operator *(Matrix3 r, Vector3 p)
         {
             float x = r.R11 * p.X + r.R12 * p.Y + r.R13 * p.Z;
@@ -70,6 +79,7 @@ namespace BezierSurfaces.Mathematics
             return new Vector3(x, y, z);
         }
 
+        // Składa dwa obroty w jeden. Wynik a * b działa jak najpierw obrót b, potem obrót a.
         public static Matrix3 operator *(Matrix3 a, Matrix3 b)
         {
             return new Matrix3(
@@ -86,13 +96,18 @@ namespace BezierSurfaces.Mathematics
                 a.R31 * b.R13 + a.R32 * b.R23 + a.R33 * b.R33);
         }
 
+        // Naprawia macierz po wielu mnożeniach (Gram-Schmidt)
+        // kolumny znowu mają długość 1 i są do siebie prostopadłe
         public Matrix3 Orthonormalized()
         {
+            // Pierwszą kolumnę tylko skracamy do długości 1.
             Vector3 c1 = Vector3.Normalize(Column1);
 
+            // Z drugiej kolumny usuwamy część równoległą do pierwszej i skracamy do długości 1.
             Vector3 c2 = Column2 - Vector3.Dot(Column2, c1) * c1;
             c2 = Vector3.Normalize(c2);
 
+            // Trzecia kolumna to wektor prostopadły do dwóch pierwszych.
             Vector3 c3 = Vector3.Cross(c1, c2);
 
             return FromColumns(c1, c2, c3);

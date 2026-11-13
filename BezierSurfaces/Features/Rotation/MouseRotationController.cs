@@ -1,19 +1,26 @@
 namespace BezierSurfaces.Features.Rotation
 {
+    // Obrót myszą
+    // Przeciąganie lewym przyciskiem obraca wokół osi x i y, kółko wokół osi z.
     public sealed class MouseRotationController
     {
+        // Ile radianów obrotu daje przesunięcie myszy o jeden piksel.
         private const float RadiansPerPixel = 0.01f;
 
+        // Obrót o jeden ząbek kółka.
         private static readonly float RadiansPerWheelNotch = SceneOrientation.DegreesToRadians(5);
-
         private const float WheelDeltaPerNotch = 120f;
 
         private readonly SceneOrientation _orientation;
+
+        // Czy trwa przeciąganie i gdzie była mysz przy poprzednim ruchu.
         private bool _isDragging;
         private Point _lastMousePosition;
 
+        // Zgłasza, że obrót się zmienił i trzeba przerysować scenę.
         public event EventHandler? OrientationChanged;
 
+        // Podpina się pod zdarzenia myszy obszaru rysowania.
         public MouseRotationController(Control control, SceneOrientation orientation)
         {
             _orientation = orientation;
@@ -23,6 +30,8 @@ namespace BezierSurfaces.Features.Rotation
             control.MouseUp += OnMouseUp;
             control.MouseWheel += OnMouseWheel;
 
+            // Po najechaniu myszą zabieramy fokus kontrolkom panelu,
+            // żeby kółko obracało scenę, a nie zmieniało np. wartości suwaka.
             control.MouseEnter += (sender, e) =>
             {
                 Form? form = control.FindForm();
@@ -33,6 +42,7 @@ namespace BezierSurfaces.Features.Rotation
             };
         }
 
+        // Kółko: obrót wokół osi z o tyle ząbków, ile przekręcono
         private void OnMouseWheel(object? sender, MouseEventArgs e)
         {
             float notches = e.Delta / WheelDeltaPerNotch;
@@ -41,6 +51,7 @@ namespace BezierSurfaces.Features.Rotation
             OrientationChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        // Początek przeciągania lewym przyciskiem, zapamiętujemy pozycję myszy.
         private void OnMouseDown(object? sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
@@ -52,6 +63,7 @@ namespace BezierSurfaces.Features.Rotation
             _lastMousePosition = e.Location;
         }
 
+        // Podczas przeciągania liczymy, o ile przesunęła się mysz od poprzedniego ruchu.
         private void OnMouseMove(object? sender, MouseEventArgs e)
         {
             if (!_isDragging)
@@ -68,12 +80,14 @@ namespace BezierSurfaces.Features.Rotation
                 return;
             }
 
+            // Ruch w poziomie obraca wokół osi y, ruch w pionie wokół osi x.
             _orientation.RotateAroundScreenY(dx * RadiansPerPixel);
             _orientation.RotateAroundScreenX(dy * RadiansPerPixel);
 
             OrientationChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        // Puszczenie lewego przycisku kończy przeciąganie.
         private void OnMouseUp(object? sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)

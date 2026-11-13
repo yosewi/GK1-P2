@@ -1,5 +1,6 @@
 namespace BezierSurfaces.Features.Triangulation
 {
+    // Trójkąt siatki
     public sealed class Triangle
     {
         public Vertex A { get; }

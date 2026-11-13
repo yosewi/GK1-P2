@@ -2,6 +2,7 @@ using BezierSurfaces.Features.Rotation;
 
 namespace BezierSurfaces.Features.Triangulation
 {
+    // Siatka trójkątów
     public sealed class TriangleMesh
     {
         public List<Triangle> Triangles { get; }
@@ -11,6 +12,8 @@ namespace BezierSurfaces.Features.Triangulation
             Triangles = triangles;
         }
 
+        // Obraca wszystkie wierzchołki siatki. Wspólny wierzchołek jest obracany kilka razy,
+        // ale zawsze z oryginału, więc wynik jest ten sam i jest git
         public void ApplyRotation(SceneOrientation orientation)
         {
             foreach (Triangle triangle in Triangles)

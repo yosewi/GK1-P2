@@ -2,8 +2,10 @@ using System.Numerics;
 
 namespace BezierSurfaces.Features.Surfaces
 {
+    // Rysuje wielobok Beziera: odcinki między sąsiednimi punktami kontrolnymi i kółka w punktach.
     public static class BezierPolygonDrawer
     {
+        // Promień kółka w punkcie kontrolnym
         private const float PointRadius = 4f;
 
         public static void Draw(Graphics g, BezierSurface surface, Color color)
@@ -14,6 +16,7 @@ namespace BezierSurfaces.Features.Surfaces
             using Pen linePen = new Pen(color, 1f);
             using Brush pointBrush = new SolidBrush(color);
 
+            // Odcinki wzdłuż wierszy siatki punktów kontrolnych.
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n - 1; j++)
@@ -22,6 +25,7 @@ namespace BezierSurfaces.Features.Surfaces
                 }
             }
 
+            // Odcinki wzdłuż kolumn siatki punktów kontrolnych.
             for (int i = 0; i < n - 1; i++)
             {
                 for (int j = 0; j < n; j++)
@@ -30,6 +34,7 @@ namespace BezierSurfaces.Features.Surfaces
                 }
             }
 
+            // Kółka we wszystkich 16 punktach kontrolnych.
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n; j++)
@@ -39,11 +44,13 @@ namespace BezierSurfaces.Features.Surfaces
             }
         }
 
+        // Odcinek między dwoma punktami
         private static void DrawSegment(Graphics g, Pen pen, Vector3 from, Vector3 to)
         {
             g.DrawLine(pen, from.X, from.Y, to.X, to.Y);
         }
 
+        // Kółko wokół punktu
         private static void DrawPoint(Graphics g, Brush brush, Vector3 point)
         {
             g.FillEllipse(brush, point.X - PointRadius, point.Y - PointRadius, 2 * PointRadius, 2 * PointRadius);

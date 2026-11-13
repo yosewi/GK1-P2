@@ -3,21 +3,16 @@ using System.Numerics;
 
 namespace BezierSurfaces.Features.Surfaces
 {
+    // Wczytuje powierzchnie z pliku tekstowego: w każdej linii jeden punkt (x y z), po 16 punktów na powierzchnię.
     public static class SurfaceFileReader
     {
+        // Zwraca wszystkie powierzchnie z pliku
         public static List<BezierSurface> Read(string path)
         {
             List<Vector3> points = ReadAllPoints(path);
-
-            if (points.Count == 0 || points.Count % BezierSurface.ControlPointCount != 0)
-            {
-                throw new FormatException(
-                    $"The file must contain a multiple of {BezierSurface.ControlPointCount} points " +
-                    $"(16 per surface), but it contains {points.Count}.");
-            }
-
             List<BezierSurface> surfaces = new List<BezierSurface>();
 
+            // Dzielimy listę punktów na kawałki po 16. Każdy kawałek to jedna powierzchnia.
             for (int start = 0; start < points.Count; start += BezierSurface.ControlPointCount)
             {
                 List<Vector3> pointsOfOneSurface = points.GetRange(start, BezierSurface.ControlPointCount);
@@ -27,6 +22,7 @@ namespace BezierSurfaces.Features.Surfaces
             return surfaces;
         }
 
+        // Czyta wszystkie linie pliku, pomija puste, a pozostałe zamienia na punkty.
         private static List<Vector3> ReadAllPoints(string path)
         {
             string[] lines = File.ReadAllLines(path);
@@ -47,14 +43,10 @@ namespace BezierSurfaces.Features.Surfaces
             return points;
         }
 
+        // Zamienia jedną linię na punkt
         private static Vector3 ParsePoint(string line, int lineNumber)
         {
             string[] parts = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (parts.Length != 3)
-            {
-                throw new FormatException($"Line {lineNumber}: expected 3 numbers (x y z), found {parts.Length}.");
-            }
 
             float x = ParseNumber(parts[0], lineNumber);
             float y = ParseNumber(parts[1], lineNumber);
@@ -63,6 +55,7 @@ namespace BezierSurfaces.Features.Surfaces
             return new Vector3(x, y, z);
         }
 
+        // Zamienia tekst na liczbę
         private static float ParseNumber(string text, int lineNumber)
         {
             if (!float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))

@@ -3,16 +3,22 @@ using BezierSurfaces.Features.Surfaces;
 
 namespace BezierSurfaces.Features.Scene
 {
+    // Stan sceny - wszystkie powierzchnie, ich wspólny obrót i dokładność triangulacji.
     public sealed class SceneModel
     {
+        // Dokładność triangulacji na starcie programu.
         public const int DefaultSteps = 10;
 
+        // Powierzchnie wczytane z pliku, każda razem ze swoją siatką trójkątów.
         public List<SceneSurface> Surfaces { get; } = new List<SceneSurface>();
 
+        // Jeden obrót wspólny dla całej sceny.
         public SceneOrientation Orientation { get; } = new SceneOrientation();
 
+        // Bieżąca dokładność triangulacji, ustawiana suwakiem.
         public int Steps { get; private set; } = DefaultSteps;
 
+        // Zastępuje powierzchnie nowymi i od razu buduje dla nich siatki.
         public void SetSurfaces(IEnumerable<BezierSurface> surfaces)
         {
             Surfaces.Clear();
@@ -22,6 +28,7 @@ namespace BezierSurfaces.Features.Scene
             }
         }
 
+        // Zmienia dokładność i przebudowuje siatki wszystkich powierzchni.
         public void SetSteps(int steps)
         {
             Steps = steps;
@@ -31,6 +38,7 @@ namespace BezierSurfaces.Features.Scene
             }
         }
 
+        // Obraca wszystkie powierzchnie i siatki bieżącym obrotem. Wołane przed narysowaniem każdej klatki.
         public void ApplyOrientation()
         {
             foreach (SceneSurface sceneSurface in Surfaces)
