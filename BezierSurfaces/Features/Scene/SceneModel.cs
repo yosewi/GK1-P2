@@ -30,7 +30,7 @@ namespace BezierSurfaces.Features.Scene
         // Kolor obiektu, wspólny dla wszystkich powierzchni
         public Vector3 ObjectColor { get; set; } = LightingModel.FromColor(Color.LightSteelBlue);
 
-        // Wczytana tekstura. Pusta, dopóki nie wczytamy żadnego obrazka.
+        // Wczytana tekstura
         public Texture? Texture { get; set; }
 
         // Czy kolor obiektu brać z tekstury zamiast stałego koloru.

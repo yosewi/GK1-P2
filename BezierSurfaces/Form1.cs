@@ -2,6 +2,7 @@ using System.Numerics;
 using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Scene;
 using BezierSurfaces.Features.Surfaces;
+using BezierSurfaces.Features.Texturing;
 using BezierSurfaces.UI;
 using BezierSurfaces.Features.Lighting;
 
@@ -111,6 +112,15 @@ namespace BezierSurfaces
         private void ConnectObjectColorControls()
         {
             _controlPanel.ChooseColorButton.Click += (sender, e) => ChooseObjectColor();
+
+            _scene.UseTexture = _controlPanel.TextureRadioButton.Checked;
+            _controlPanel.TextureRadioButton.CheckedChanged += (sender, e) =>
+            {
+                _scene.UseTexture = _controlPanel.TextureRadioButton.Checked;
+                _canvas.RequestRedraw();
+            };
+
+            _controlPanel.LoadTextureButton.Click += (sender, e) => LoadTexture();
         }
 
         private void ChooseLightColor()
@@ -144,6 +154,32 @@ namespace BezierSurfaces
         {
             _mouseRotation = new MouseRotationController(_canvas, _scene.Orientation);
             _mouseRotation.OrientationChanged += (sender, e) => _canvas.RequestRedraw();
+        }
+
+        private void LoadTexture()
+        {
+            using OpenFileDialog dialog = new OpenFileDialog
+            {
+                Title = "Load texture",
+                Filter = "Images|*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
+            };
+
+            if (dialog.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+
+            try
+            {
+                _scene.Texture = Texture.Load(dialog.FileName);
+                _controlPanel.TextureRadioButton.Checked = true;
+                _canvas.RequestRedraw();
+            }
+            catch (Exception ex) when (ex is IOException or ArgumentException or OutOfMemoryException)
+            {
+                MessageBox.Show($"Could not load texture from:\n{dialog.FileName}\n\n{ex.Message}",
+                    "Load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void LoadSurfaces(string path)
