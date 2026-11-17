@@ -19,6 +19,9 @@ namespace BezierSurfaces
         private readonly SceneRenderer _sceneRenderer = new SceneRenderer();
         private MouseRotationController? _mouseRotation;
 
+        private const float LightStepPerTick = 0.003f;
+        private readonly System.Windows.Forms.Timer _lightTimer = new System.Windows.Forms.Timer { Interval = 30 };
+
         public Form1()
         {
             InitializeComponent();
@@ -35,6 +38,7 @@ namespace BezierSurfaces
 
             ConnectControls();
             ConnectLightingControls();
+            ConnectLightAnimation();
             ConnectObjectColorControls();
             ConnectMouseRotation();
 
@@ -109,6 +113,21 @@ namespace BezierSurfaces
             };
 
             _controlPanel.LightColorButton.Click += (sender, e) => ChooseLightColor();
+        }
+
+        private void ConnectLightAnimation()
+        {
+            _lightTimer.Tick += (sender, e) =>
+            {
+                _scene.Light.Advance(LightStepPerTick);
+                _canvas.RequestRedraw();
+            };
+
+            _lightTimer.Enabled = _controlPanel.AnimateLightCheckBox.Checked;
+            _controlPanel.AnimateLightCheckBox.CheckedChanged += (sender, e) =>
+            {
+                _lightTimer.Enabled = _controlPanel.AnimateLightCheckBox.Checked;
+            };
         }
 
         private void ConnectObjectColorControls()
