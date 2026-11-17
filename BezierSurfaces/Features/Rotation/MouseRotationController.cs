@@ -20,6 +20,10 @@ namespace BezierSurfaces.Features.Rotation
         // Zgłasza, że obrót się zmienił i trzeba przerysować scenę.
         public event EventHandler? OrientationChanged;
 
+        // Pozwala innemu narzędziu przejąć przeciąganie: gdy zwróci true dla miejsca kliknięcia,
+        // obrót się nie zaczyna (np. bo w tym miejscu jest punkt krzywej światła).
+        public Func<Point, bool>? ShouldIgnoreDragAt { get; set; }
+
         // Podpina się pod zdarzenia myszy obszaru rysowania.
         public MouseRotationController(Control control, SceneOrientation orientation)
         {
@@ -54,7 +58,7 @@ namespace BezierSurfaces.Features.Rotation
         // Początek przeciągania lewym przyciskiem, zapamiętujemy pozycję myszy.
         private void OnMouseDown(object? sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left)
+            if (e.Button != MouseButtons.Left || ShouldIgnoreDragAt?.Invoke(e.Location) == true)
             {
                 return;
             }

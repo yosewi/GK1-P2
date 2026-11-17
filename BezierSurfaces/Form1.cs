@@ -18,6 +18,7 @@ namespace BezierSurfaces
         private readonly SceneModel _scene = new SceneModel();
         private readonly SceneRenderer _sceneRenderer = new SceneRenderer();
         private MouseRotationController? _mouseRotation;
+        private LightPathEditor? _lightPathEditor;
 
         private readonly LightAnimator _lightAnimator = new LightAnimator();
         private readonly System.Windows.Forms.Timer _lightTimer = new System.Windows.Forms.Timer { Interval = 30 };
@@ -39,6 +40,7 @@ namespace BezierSurfaces
             ConnectControls();
             ConnectLightingControls();
             ConnectLightAnimation();
+            ConnectLightPathEditing();
             ConnectObjectColorControls();
             ConnectMouseRotation();
 
@@ -133,6 +135,20 @@ namespace BezierSurfaces
             };
         }
 
+        private void ConnectLightPathEditing()
+        {
+            LightPathEditor editor = new LightPathEditor(_canvas, _scene.Light.Path);
+            editor.PathChanged += (sender, e) => _canvas.RequestRedraw();
+
+            editor.IsEnabled = _controlPanel.ShowLightCurveCheckBox.Checked;
+            _controlPanel.ShowLightCurveCheckBox.CheckedChanged += (sender, e) =>
+            {
+                editor.IsEnabled = _controlPanel.ShowLightCurveCheckBox.Checked;
+            };
+
+            _lightPathEditor = editor;
+        }
+
         private void SetLightAnimationRunning(bool running)
         {
             _lightAnimator.IsRunning = running;
@@ -184,6 +200,7 @@ namespace BezierSurfaces
         {
             _mouseRotation = new MouseRotationController(_canvas, _scene.Orientation);
             _mouseRotation.OrientationChanged += (sender, e) => _canvas.RequestRedraw();
+            _mouseRotation.ShouldIgnoreDragAt = location => _lightPathEditor?.CanGrabAt(location) == true;
         }
 
         private void LoadTexture()
