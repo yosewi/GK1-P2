@@ -1,7 +1,5 @@
-using System.Numerics;
 using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Surfaces;
-using BezierSurfaces.Features.Texturing;
 using BezierSurfaces.Features.Lighting;
 using BezierSurfaces.Features.NormalMapping;
 
@@ -12,6 +10,15 @@ namespace BezierSurfaces.Features.Scene
     {
         // Dokładność triangulacji na starcie programu.
         public const int DefaultSteps = 10;
+
+        // Startowe kolory obiektu kolejnych powierzchni
+        private static readonly Color[] DefaultObjectColors =
+        {
+            Color.LightSteelBlue,
+            Color.LightPink,
+            Color.PaleGreen,
+            Color.Khaki,
+        };
 
         // Powierzchnie wczytane z pliku, każda razem ze swoją siatką trójkątów.
         public List<SceneSurface> Surfaces { get; } = new List<SceneSurface>();
@@ -28,18 +35,6 @@ namespace BezierSurfaces.Features.Scene
         // Źródło światła.
         public LightSource Light { get; } = new LightSource();
 
-        // Kolor obiektu, wspólny dla wszystkich powierzchni
-        public Vector3 ObjectColor { get; set; } = LightingModel.FromColor(Color.LightSteelBlue);
-
-        // Wczytana tekstura
-        public Texture? Texture { get; set; }
-
-        // Czy kolor obiektu brać z tekstury zamiast stałego koloru.
-        public bool UseTexture { get; set; }
-
-        // Tekstura, której trzeba użyć przy rysowaniu, albo null, gdy rysujemy stałym kolorem.
-        public Texture? ActiveTexture => UseTexture ? Texture : null;
-
         // Wczytana mapa wektorów normalnych.
         public NormalMap? NormalMap { get; set; }
 
@@ -50,12 +45,14 @@ namespace BezierSurfaces.Features.Scene
         public NormalMap? ActiveNormalMap => UseNormalMap ? NormalMap : null;
 
         // Zastępuje powierzchnie nowymi i od razu buduje dla nich siatki.
+        // Kolejne powierzchnie dostają kolejne kolory startowe.
         public void SetSurfaces(IEnumerable<BezierSurface> surfaces)
         {
             Surfaces.Clear();
             foreach (BezierSurface surface in surfaces)
             {
-                Surfaces.Add(new SceneSurface(surface, Steps));
+                Color color = DefaultObjectColors[Surfaces.Count % DefaultObjectColors.Length];
+                Surfaces.Add(new SceneSurface(surface, Steps, LightingModel.FromColor(color)));
             }
         }
 

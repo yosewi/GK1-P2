@@ -62,13 +62,13 @@ namespace BezierSurfaces.Features.Scene
         }
 
         // Wypełnia trójkąty wszystkich powierzchni kolorem z modelu oświetlenia.
-        // Kolor obiektu i światło są wspólne dla całej sceny.
+        // Światło jest wspólne, a kolor obiektu (stały albo z tekstury) każda powierzchnia ma swój.
         private static void DrawFilledTriangles(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, SceneModel scene)
         {
             foreach (SceneSurface surface in scene.Surfaces)
             {
                 LitMeshFiller.Fill(pixels, depthBuffer, mapper, surface.Mesh,
-                    scene.Lighting, scene.Light.Position, scene.ObjectColor, scene.ActiveTexture,
+                    scene.Lighting, scene.Light.Position, surface.ObjectColor, surface.ActiveTexture,
                     scene.ActiveNormalMap);
             }
         }

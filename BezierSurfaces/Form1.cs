@@ -21,6 +21,7 @@ namespace BezierSurfaces
         private readonly SceneRenderer _sceneRenderer = new SceneRenderer();
         private MouseRotationController? _mouseRotation;
         private LightPathEditor? _lightPathEditor;
+        private int _selectedSurfaceIndex;
 
         private readonly LightAnimator _lightAnimator = new LightAnimator();
         private readonly System.Windows.Forms.Timer _lightTimer = new System.Windows.Forms.Timer { Interval = 30 };
@@ -48,7 +49,7 @@ namespace BezierSurfaces
             ConnectMouseRotation();
 
             LoadSurfaces(DefaultSurfacesPath);
-            TryLoadTexture(DefaultTexturePath);
+            TryLoadTexture(DefaultTexturePath, _scene.Surfaces);
             TryLoadNormalMap(DefaultNormalMapPath);
 
             _canvas.RenderFrame += (sender, e) => RenderFrame();
@@ -163,11 +164,14 @@ namespace BezierSurfaces
         {
             _controlPanel.ChooseColorButton.Click += (sender, e) => ChooseObjectColor();
 
-            _scene.UseTexture = _controlPanel.TextureRadioButton.Checked;
             _controlPanel.TextureRadioButton.CheckedChanged += (sender, e) =>
             {
-                _scene.UseTexture = _controlPanel.TextureRadioButton.Checked;
-                _canvas.RequestRedraw();
+                SceneSurface? surface = SelectedSurface;
+                if (surface != null)
+                {
+                    surface.UseTexture = _controlPanel.TextureRadioButton.Checked;
+                    _canvas.RequestRedraw();
+                }
             };
 
             _controlPanel.LoadTextureButton.Click += (sender, e) => LoadTexture();
@@ -194,11 +198,15 @@ namespace BezierSurfaces
             }
         }
 
+        private SceneSurface? SelectedSurface =>
+            _selectedSurfaceIndex < _scene.Surfaces.Count ? _scene.Surfaces[_selectedSurfaceIndex] : null;
+
         private void ChooseObjectColor()
         {
-            if (TryPickColor(_scene.ObjectColor, out Vector3 color))
+            SceneSurface? surface = SelectedSurface;
+            if (surface != null && TryPickColor(surface.ObjectColor, out Vector3 color))
             {
-                _scene.ObjectColor = color;
+                surface.ObjectColor = color;
                 _canvas.RequestRedraw();
             }
         }
@@ -221,8 +229,14 @@ namespace BezierSurfaces
 
         private void LoadTexture()
         {
+            SceneSurface? surface = SelectedSurface;
+            if (surface == null)
+            {
+                return;
+            }
+
             string? path = AskForImagePath("Load texture");
-            if (path != null && TryLoadTexture(path))
+            if (path != null && TryLoadTexture(path, new[] { surface }))
             {
                 _controlPanel.TextureRadioButton.Checked = true;
                 _canvas.RequestRedraw();
@@ -250,9 +264,16 @@ namespace BezierSurfaces
             return dialog.ShowDialog(this) == DialogResult.OK ? dialog.FileName : null;
         }
 
-        private bool TryLoadTexture(string path)
+        private bool TryLoadTexture(string path, IEnumerable<SceneSurface> surfaces)
         {
-            return TryLoadImage(path, "texture", () => _scene.Texture = Texture.Load(path));
+            return TryLoadImage(path, "texture", () =>
+            {
+                Texture texture = Texture.Load(path);
+                foreach (SceneSurface surface in surfaces)
+                {
+                    surface.Texture = texture;
+                }
+            });
         }
 
         private bool TryLoadNormalMap(string path)
