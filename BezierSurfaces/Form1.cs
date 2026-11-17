@@ -162,6 +162,11 @@ namespace BezierSurfaces
 
         private void ConnectObjectColorControls()
         {
+            _controlPanel.SurfaceComboBox.SelectedIndexChanged += (sender, e) =>
+            {
+                SelectSurface(_controlPanel.SurfaceComboBox.SelectedIndex);
+            };
+
             _controlPanel.ChooseColorButton.Click += (sender, e) => ChooseObjectColor();
 
             _controlPanel.TextureRadioButton.CheckedChanged += (sender, e) =>
@@ -200,6 +205,42 @@ namespace BezierSurfaces
 
         private SceneSurface? SelectedSurface =>
             _selectedSurfaceIndex < _scene.Surfaces.Count ? _scene.Surfaces[_selectedSurfaceIndex] : null;
+
+        private void SelectSurface(int index)
+        {
+            _selectedSurfaceIndex = Math.Max(0, index);
+
+            SceneSurface? surface = SelectedSurface;
+            if (surface == null)
+            {
+                return;
+            }
+
+            if (surface.UseTexture)
+            {
+                _controlPanel.TextureRadioButton.Checked = true;
+            }
+            else
+            {
+                _controlPanel.ConstantColorRadioButton.Checked = true;
+            }
+        }
+
+        private void UpdateSurfaceList()
+        {
+            ComboBox list = _controlPanel.SurfaceComboBox;
+            list.Items.Clear();
+
+            for (int index = 0; index < _scene.Surfaces.Count; index++)
+            {
+                list.Items.Add($"Surface {index + 1}");
+            }
+
+            if (list.Items.Count > 0)
+            {
+                list.SelectedIndex = 0;
+            }
+        }
 
         private void ChooseObjectColor()
         {
@@ -302,6 +343,7 @@ namespace BezierSurfaces
             {
                 List<BezierSurface> surfaces = SurfaceFileReader.Read(path);
                 _scene.SetSurfaces(surfaces);
+                UpdateSurfaceList();
             }
             catch (Exception ex) when (ex is IOException or FormatException or UnauthorizedAccessException)
             {

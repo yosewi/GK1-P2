@@ -30,6 +30,7 @@ namespace BezierSurfaces.UI
         public CheckBox AnimateLightCheckBox { get; }
         public CheckBox ShowLightCurveCheckBox { get; }
 
+        public ComboBox SurfaceComboBox { get; }
         public RadioButton ConstantColorRadioButton { get; }
         public Button ChooseColorButton { get; }
         public RadioButton TextureRadioButton { get; }
@@ -75,6 +76,7 @@ namespace BezierSurfaces.UI
             ShowLightCurveCheckBox = ControlFactory.AddCheckBox(this, "Show light curve points", true);
 
             ControlFactory.AddHeader(this, "Object color");
+            SurfaceComboBox = ControlFactory.AddComboBox(this, ItemWidth);
             ConstantColorRadioButton = ControlFactory.AddRadioButton(this, "Constant color", true);
             ChooseColorButton = ControlFactory.AddButton(this, "Choose color...", ItemWidth);
             TextureRadioButton = ControlFactory.AddRadioButton(this, "Texture", false);

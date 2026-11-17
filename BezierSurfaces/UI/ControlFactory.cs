@@ -69,6 +69,17 @@ namespace BezierSurfaces.UI
             return radioButton;
         }
 
+        public static ComboBox AddComboBox(Control parent, int width)
+        {
+            ComboBox comboBox = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Width = width,
+            };
+            parent.Controls.Add(comboBox);
+            return comboBox;
+        }
+
         public static Button AddButton(Control parent, string text, int width)
         {
             Button button = new Button
