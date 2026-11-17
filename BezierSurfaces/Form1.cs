@@ -11,6 +11,7 @@ namespace BezierSurfaces
     public partial class Form1 : Form
     {
         private static readonly string DefaultSurfacesPath = Path.Combine(AppContext.BaseDirectory, "Data", "surfaces.txt");
+        private static readonly string DefaultTexturePath = Path.Combine(AppContext.BaseDirectory, "Data", "bricks.png");
 
         private readonly RenderCanvas _canvas = new RenderCanvas();
         private readonly ControlPanel _controlPanel = new ControlPanel();
@@ -38,6 +39,7 @@ namespace BezierSurfaces
             ConnectMouseRotation();
 
             LoadSurfaces(DefaultSurfacesPath);
+            TryLoadTexture(DefaultTexturePath);
 
             _canvas.RenderFrame += (sender, e) => RenderFrame();
             _canvas.RequestRedraw();
@@ -164,21 +166,25 @@ namespace BezierSurfaces
                 Filter = "Images|*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
             };
 
-            if (dialog.ShowDialog(this) != DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK && TryLoadTexture(dialog.FileName))
             {
-                return;
-            }
-
-            try
-            {
-                _scene.Texture = Texture.Load(dialog.FileName);
                 _controlPanel.TextureRadioButton.Checked = true;
                 _canvas.RequestRedraw();
             }
+        }
+
+        private bool TryLoadTexture(string path)
+        {
+            try
+            {
+                _scene.Texture = Texture.Load(path);
+                return true;
+            }
             catch (Exception ex) when (ex is IOException or ArgumentException or OutOfMemoryException)
             {
-                MessageBox.Show($"Could not load texture from:\n{dialog.FileName}\n\n{ex.Message}",
+                MessageBox.Show($"Could not load texture from:\n{path}\n\n{ex.Message}",
                     "Load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
 
