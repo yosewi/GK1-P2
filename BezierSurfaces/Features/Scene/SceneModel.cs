@@ -3,6 +3,7 @@ using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Surfaces;
 using BezierSurfaces.Features.Texturing;
 using BezierSurfaces.Features.Lighting;
+using BezierSurfaces.Features.NormalMapping;
 
 namespace BezierSurfaces.Features.Scene
 {
@@ -38,6 +39,15 @@ namespace BezierSurfaces.Features.Scene
 
         // Tekstura, której trzeba użyć przy rysowaniu, albo null, gdy rysujemy stałym kolorem.
         public Texture? ActiveTexture => UseTexture ? Texture : null;
+
+        // Wczytana mapa wektorów normalnych.
+        public NormalMap? NormalMap { get; set; }
+
+        // Czy zmieniać wektory normalne na podstawie mapy.
+        public bool UseNormalMap { get; set; }
+
+        // Mapa normalnych, której trzeba użyć przy rysowaniu, albo null, gdy jest wyłączona.
+        public NormalMap? ActiveNormalMap => UseNormalMap ? NormalMap : null;
 
         // Zastępuje powierzchnie nowymi i od razu buduje dla nich siatki.
         public void SetSurfaces(IEnumerable<BezierSurface> surfaces)
