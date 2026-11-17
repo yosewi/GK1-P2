@@ -39,8 +39,6 @@ namespace BezierSurfaces.UI
         public CheckBox UseNormalMapCheckBox { get; }
         public Button LoadNormalMapButton { get; }
 
-        public Button LoadControlPointsButton { get; }
-
         public ControlPanel()
         {
             Dock = DockStyle.Right;
@@ -85,9 +83,6 @@ namespace BezierSurfaces.UI
             ControlFactory.AddHeader(this, "Normal map");
             UseNormalMapCheckBox = ControlFactory.AddCheckBox(this, "Use normal map", false);
             LoadNormalMapButton = ControlFactory.AddButton(this, "Load normal map...", ItemWidth);
-
-            ControlFactory.AddHeader(this, "File");
-            LoadControlPointsButton = ControlFactory.AddButton(this, "Load control points...", ItemWidth);
         }
 
         public static float FromHundredths(int value) => value / 100f;

@@ -45,7 +45,7 @@ namespace BezierSurfaces.Features.Texturing
         public Vector3 Sample(float u, float v)
         {
             int x = Math.Clamp((int)MathF.Round(u * (Width - 1)), 0, Width - 1);
-            int y = Math.Clamp((int)MathF.Round(v * (Height - 1)), 0, Height - 1);
+            int y = Math.Clamp((int)MathF.Round((1 - v) * (Height - 1)), 0, Height - 1);
             return _colors[y * Width + x];
         }
     }
