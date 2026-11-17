@@ -19,7 +19,7 @@ namespace BezierSurfaces
         private readonly SceneRenderer _sceneRenderer = new SceneRenderer();
         private MouseRotationController? _mouseRotation;
 
-        private const float LightStepPerTick = 0.003f;
+        private readonly LightAnimator _lightAnimator = new LightAnimator();
         private readonly System.Windows.Forms.Timer _lightTimer = new System.Windows.Forms.Timer { Interval = 30 };
 
         public Form1()
@@ -117,16 +117,12 @@ namespace BezierSurfaces
 
         private void ConnectLightAnimation()
         {
-            _lightTimer.Tick += (sender, e) =>
-            {
-                _scene.Light.Advance(LightStepPerTick);
-                _canvas.RequestRedraw();
-            };
+            _lightTimer.Tick += (sender, e) => _canvas.RequestRedraw();
 
-            _lightTimer.Enabled = _controlPanel.AnimateLightCheckBox.Checked;
+            SetLightAnimationRunning(_controlPanel.AnimateLightCheckBox.Checked);
             _controlPanel.AnimateLightCheckBox.CheckedChanged += (sender, e) =>
             {
-                _lightTimer.Enabled = _controlPanel.AnimateLightCheckBox.Checked;
+                SetLightAnimationRunning(_controlPanel.AnimateLightCheckBox.Checked);
             };
 
             _sceneRenderer.ShowLightPathPoints = _controlPanel.ShowLightCurveCheckBox.Checked;
@@ -135,6 +131,12 @@ namespace BezierSurfaces
                 _sceneRenderer.ShowLightPathPoints = _controlPanel.ShowLightCurveCheckBox.Checked;
                 _canvas.RequestRedraw();
             };
+        }
+
+        private void SetLightAnimationRunning(bool running)
+        {
+            _lightAnimator.IsRunning = running;
+            _lightTimer.Enabled = running;
         }
 
         private void ConnectObjectColorControls()
@@ -235,6 +237,7 @@ namespace BezierSurfaces
                 return;
             }
 
+            _lightAnimator.Update(_scene.Light);
             _scene.ApplyOrientation();
             _sceneRenderer.Render(_canvas.Frame, _scene);
         }
