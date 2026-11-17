@@ -128,6 +128,13 @@ namespace BezierSurfaces
             {
                 _lightTimer.Enabled = _controlPanel.AnimateLightCheckBox.Checked;
             };
+
+            _sceneRenderer.ShowLightPathPoints = _controlPanel.ShowLightCurveCheckBox.Checked;
+            _controlPanel.ShowLightCurveCheckBox.CheckedChanged += (sender, e) =>
+            {
+                _sceneRenderer.ShowLightPathPoints = _controlPanel.ShowLightCurveCheckBox.Checked;
+                _canvas.RequestRedraw();
+            };
         }
 
         private void ConnectObjectColorControls()

@@ -1,6 +1,7 @@
 using System.Drawing.Drawing2D;
 using FastBitmapLib;
 using BezierSurfaces.Features.Filling;
+using BezierSurfaces.Features.Lighting;
 using BezierSurfaces.Features.Surfaces;
 using BezierSurfaces.Features.Triangulation;
 using BezierSurfaces.Rendering;
@@ -30,6 +31,8 @@ namespace BezierSurfaces.Features.Scene
         public bool ShowTriangleMesh { get; set; } = true;
 
         public bool ShowBezierPolygon { get; set; } = true;
+
+        public bool ShowLightPathPoints { get; set; } = true;
 
         // Z-bufor
         private DepthBuffer? _depthBuffer;
@@ -107,6 +110,9 @@ namespace BezierSurfaces.Features.Scene
                     BezierPolygonDrawer.Draw(g, sceneSurface.Surface, color);
                 }
             }
+
+            // Krzywa światła i samo światło na samym wierzchu.
+            LightPathDrawer.Draw(g, scene.Light, ShowLightPathPoints);
         }
     }
 }
