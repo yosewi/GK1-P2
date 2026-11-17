@@ -1,4 +1,5 @@
 using System.Numerics;
+using BezierSurfaces.Features.NormalMapping;
 using BezierSurfaces.Features.Rotation;
 using BezierSurfaces.Features.Scene;
 using BezierSurfaces.Features.Surfaces;
@@ -12,6 +13,7 @@ namespace BezierSurfaces
     {
         private static readonly string DefaultSurfacesPath = Path.Combine(AppContext.BaseDirectory, "Data", "surfaces.txt");
         private static readonly string DefaultTexturePath = Path.Combine(AppContext.BaseDirectory, "Data", "bricks.png");
+        private static readonly string DefaultNormalMapPath = Path.Combine(AppContext.BaseDirectory, "Data", "normal_4.png");
 
         private readonly RenderCanvas _canvas = new RenderCanvas();
         private readonly ControlPanel _controlPanel = new ControlPanel();
@@ -42,10 +44,12 @@ namespace BezierSurfaces
             ConnectLightAnimation();
             ConnectLightPathEditing();
             ConnectObjectColorControls();
+            ConnectNormalMapControls();
             ConnectMouseRotation();
 
             LoadSurfaces(DefaultSurfacesPath);
             TryLoadTexture(DefaultTexturePath);
+            TryLoadNormalMap(DefaultNormalMapPath);
 
             _canvas.RenderFrame += (sender, e) => RenderFrame();
             _canvas.RequestRedraw();
@@ -169,6 +173,18 @@ namespace BezierSurfaces
             _controlPanel.LoadTextureButton.Click += (sender, e) => LoadTexture();
         }
 
+        private void ConnectNormalMapControls()
+        {
+            _scene.UseNormalMap = _controlPanel.UseNormalMapCheckBox.Checked;
+            _controlPanel.UseNormalMapCheckBox.CheckedChanged += (sender, e) =>
+            {
+                _scene.UseNormalMap = _controlPanel.UseNormalMapCheckBox.Checked;
+                _canvas.RequestRedraw();
+            };
+
+            _controlPanel.LoadNormalMapButton.Click += (sender, e) => LoadNormalMap();
+        }
+
         private void ChooseLightColor()
         {
             if (TryPickColor(_scene.Lighting.LightColor, out Vector3 color))
@@ -205,29 +221,55 @@ namespace BezierSurfaces
 
         private void LoadTexture()
         {
-            using OpenFileDialog dialog = new OpenFileDialog
-            {
-                Title = "Load texture",
-                Filter = "Images|*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
-            };
-
-            if (dialog.ShowDialog(this) == DialogResult.OK && TryLoadTexture(dialog.FileName))
+            string? path = AskForImagePath("Load texture");
+            if (path != null && TryLoadTexture(path))
             {
                 _controlPanel.TextureRadioButton.Checked = true;
                 _canvas.RequestRedraw();
             }
         }
 
+        private void LoadNormalMap()
+        {
+            string? path = AskForImagePath("Load normal map");
+            if (path != null && TryLoadNormalMap(path))
+            {
+                _controlPanel.UseNormalMapCheckBox.Checked = true;
+                _canvas.RequestRedraw();
+            }
+        }
+
+        private string? AskForImagePath(string title)
+        {
+            using OpenFileDialog dialog = new OpenFileDialog
+            {
+                Title = title,
+                Filter = "Images|*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
+            };
+
+            return dialog.ShowDialog(this) == DialogResult.OK ? dialog.FileName : null;
+        }
+
         private bool TryLoadTexture(string path)
+        {
+            return TryLoadImage(path, "texture", () => _scene.Texture = Texture.Load(path));
+        }
+
+        private bool TryLoadNormalMap(string path)
+        {
+            return TryLoadImage(path, "normal map", () => _scene.NormalMap = NormalMap.Load(path));
+        }
+
+        private bool TryLoadImage(string path, string description, Action load)
         {
             try
             {
-                _scene.Texture = Texture.Load(path);
+                load();
                 return true;
             }
             catch (Exception ex) when (ex is IOException or ArgumentException or OutOfMemoryException)
             {
-                MessageBox.Show($"Could not load texture from:\n{path}\n\n{ex.Message}",
+                MessageBox.Show($"Could not load {description} from:\n{path}\n\n{ex.Message}",
                     "Load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
