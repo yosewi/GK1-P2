@@ -3,7 +3,6 @@ using System.Diagnostics;
 namespace BezierSurfaces.Features.Lighting
 {
     // Przesuwa światło po krzywej o tyle, ile czasu naprawdę upłynęło od poprzedniej klatki.
-    // Dzięki temu prędkość ruchu nie zależy od tego, jak często rysują się klatki.
     public sealed class LightAnimator
     {
         // Prędkość: jedno okrążenie na 10 sekund.

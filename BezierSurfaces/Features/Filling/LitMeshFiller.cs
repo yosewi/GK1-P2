@@ -86,12 +86,19 @@ namespace BezierSurfaces.Features.Filling
                     Vector3 normal = VectorMath.SafeNormalize(
                         BarycentricCoordinates.Interpolate(weights, normalA, normalB, normalC));
 
+                    bool isOnOtherSide = normal.Z < 0;
+
                     // Z mapą normalnych: normalną zmieniamy wektorem odczytanym z mapy w miejscu (u, v).
                     if (normalMap != null)
                     {
                         Vector3 tangentU = BarycentricCoordinates.Interpolate(weights, tangentUA, tangentUB, tangentUC);
                         Vector3 tangentV = BarycentricCoordinates.Interpolate(weights, tangentVA, tangentVB, tangentVC);
                         normal = normalMap.Apply(normal, tangentU, tangentV, parameters.X, parameters.Y);
+                    }
+
+                    if(isOnOtherSide)
+                    {
+                        normal = -normal;
                     }
 
                     // Punkt sceny widoczny w tym pikselu i kierunek od niego do światła.
