@@ -2,10 +2,9 @@ using System.Numerics;
 
 namespace BezierSurfaces.Rendering
 {
-    // Zamienia punkt sceny na piksel ekranu, pomijając głębokość z.
+    // Zamienia punkt sceny na piksel ekranu.
     public sealed class ScreenMapper
     {
-        // Środek obszaru rysowania w pikselach.
         public float CenterX { get; }
         public float CenterY { get; }
 
@@ -15,13 +14,11 @@ namespace BezierSurfaces.Rendering
             CenterY = height / 2f;
         }
 
-        // Pomija z. Oś y odwracamy, bo na ekranie y rośnie w dół, a w scenie w górę.
         public Vector2 ToScreen(Vector3 worldPoint)
         {
             return new Vector2(CenterX + worldPoint.X, CenterY - worldPoint.Y);
         }
 
-        // Odwrotność ToScreen: z piksela ekranu i głębokości z odtwarza punkt sceny.
         public Vector3 ToWorld(float screenX, float screenY, float z)
         {
             return new Vector3(screenX - CenterX, CenterY - screenY, z);

@@ -34,7 +34,6 @@ namespace BezierSurfaces.Features.Filling
 
             BarycentricCoordinates barycentric = new BarycentricCoordinates(a, b, c);
 
-            // Trójkąt widziany z boku (zerowe pole) nie ma wnętrza, więc pomijamy go.
             if (barycentric.IsDegenerate)
             {
                 return;
@@ -49,7 +48,7 @@ namespace BezierSurfaces.Features.Filling
             Vector3 normalB = triangle.B.RotatedNormal;
             Vector3 normalC = triangle.C.RotatedNormal;
 
-            // Wektory styczne wierzchołków po obrocie - potrzebne przy mapie normalnych.
+            // Wektory styczne wierzchołków po obrocie
             Vector3 tangentUA = triangle.A.RotatedTangentU;
             Vector3 tangentUB = triangle.B.RotatedTangentU;
             Vector3 tangentUC = triangle.C.RotatedTangentU;
@@ -58,7 +57,7 @@ namespace BezierSurfaces.Features.Filling
             Vector3 tangentVB = triangle.B.RotatedTangentV;
             Vector3 tangentVC = triangle.C.RotatedTangentV;
 
-            // Parametry u, v wierzchołków - z nich wyznaczamy miejsce na teksturze i na mapie normalnych.
+            // Parametry u, v wierzchołków
             Vector2 parametersA = new Vector2(triangle.A.U, triangle.A.V);
             Vector2 parametersB = new Vector2(triangle.B.U, triangle.B.V);
             Vector2 parametersC = new Vector2(triangle.C.U, triangle.C.V);
@@ -71,7 +70,6 @@ namespace BezierSurfaces.Features.Filling
                     Vector3 weights = barycentric.Compute(x, y);
                     float z = BarycentricCoordinates.Interpolate(weights, zA, zB, zC);
 
-                    // Piksel zasłonięty przez coś bliższego - nie liczymy dla niego koloru.
                     if (!depthBuffer.TryUpdate(x, y, z))
                     {
                         continue;
@@ -82,7 +80,7 @@ namespace BezierSurfaces.Features.Filling
                         ? BarycentricCoordinates.Interpolate(weights, parametersA, parametersB, parametersC)
                         : Vector2.Zero;
 
-                    // Wektor normalny w tym pikselu. Po uśrednieniu jest krótszy niż 1, więc go normalizujemy.
+                    // Wektor normalny w tym pikselu.
                     Vector3 normal = VectorMath.SafeNormalize(
                         BarycentricCoordinates.Interpolate(weights, normalA, normalB, normalC));
 
@@ -105,7 +103,6 @@ namespace BezierSurfaces.Features.Filling
                     Vector3 point = mapper.ToWorld(x, y, z);
                     Vector3 toLight = VectorMath.SafeNormalize(lightPosition - point);
 
-                    // Kolor obiektu w tym pikselu: z tekstury w miejscu (u, v) albo stały.
                     Vector3 pixelObjectColor = objectColor;
                     if (texture != null)
                     {

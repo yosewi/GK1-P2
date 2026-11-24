@@ -4,8 +4,7 @@ using BezierSurfaces.Mathematics;
 
 namespace BezierSurfaces.Features.NormalMapping
 {
-    // Mapa wektorów normalnych: obrazek, w którym kolor piksela zapisuje wektor.
-    // Składowe R, G, B odpowiadają współrzędnym x, y, z wektora z zakresu od -1 do 1.
+    // Mapa wektorów normalnych.
     public sealed class NormalMap
     {
         private readonly Texture _image;
@@ -15,7 +14,6 @@ namespace BezierSurfaces.Features.NormalMapping
             _image = image;
         }
 
-        // Wczytuje mapę z pliku graficznego.
         public static NormalMap Load(string path)
         {
             return new NormalMap(Texture.Load(path));
@@ -28,9 +26,7 @@ namespace BezierSurfaces.Features.NormalMapping
             return VectorMath.SafeNormalize(2 * color - Vector3.One);
         }
 
-        // Zmienia wektor normalny powierzchni na podstawie mapy.
-        // Wektor z mapy jest zapisany względem powierzchni: x wzdłuż Pu, y wzdłuż Pv, z wzdłuż normalnej.
-        // Macierz o kolumnach Pu, Pv, N przenosi go do układu sceny.
+        // Zmienia wektor normalny powierzchni na podstawie mapy. z układu powierzchni na układ sceny.
         public Vector3 Apply(Vector3 surfaceNormal, Vector3 tangentU, Vector3 tangentV, float u, float v)
         {
             Matrix3 transform = Matrix3.FromColumns(

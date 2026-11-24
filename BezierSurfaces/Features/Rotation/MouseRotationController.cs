@@ -4,24 +4,18 @@ namespace BezierSurfaces.Features.Rotation
     // Przeciąganie lewym przyciskiem obraca wokół osi x i y, kółko wokół osi z.
     public sealed class MouseRotationController
     {
-        // Ile radianów obrotu daje przesunięcie myszy o jeden piksel.
         private const float RadiansPerPixel = 0.01f;
 
-        // Obrót o jeden ząbek kółka.
         private static readonly float RadiansPerWheelNotch = SceneOrientation.DegreesToRadians(5);
         private const float WheelDeltaPerNotch = 120f;
 
         private readonly SceneOrientation _orientation;
 
-        // Czy trwa przeciąganie i gdzie była mysz przy poprzednim ruchu.
         private bool _isDragging;
         private Point _lastMousePosition;
 
-        // Zgłasza, że obrót się zmienił i trzeba przerysować scenę.
         public event EventHandler? OrientationChanged;
 
-        // Pozwala innemu narzędziu przejąć przeciąganie: gdy zwróci true dla miejsca kliknięcia,
-        // obrót się nie zaczyna (np. bo w tym miejscu jest punkt krzywej światła).
         public Func<Point, bool>? ShouldIgnoreDragAt { get; set; }
 
         // Podpina się pod zdarzenia myszy obszaru rysowania.
@@ -34,8 +28,6 @@ namespace BezierSurfaces.Features.Rotation
             control.MouseUp += OnMouseUp;
             control.MouseWheel += OnMouseWheel;
 
-            // Po najechaniu myszą zabieramy fokus kontrolkom panelu,
-            // żeby kółko obracało scenę, a nie zmieniało np. wartości suwaka.
             control.MouseEnter += (sender, e) =>
             {
                 Form? form = control.FindForm();

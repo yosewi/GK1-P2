@@ -9,7 +9,6 @@ namespace BezierSurfaces.Mathematics
             return BinomialCoefficient(n, i) * MathF.Pow(t, i) * MathF.Pow(1 - t, n - i);
         }
 
-        // Dwumianowa
         public static float BinomialCoefficient(int n, int k)
         {
             float result = 1;

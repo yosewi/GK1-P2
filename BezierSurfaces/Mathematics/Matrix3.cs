@@ -5,7 +5,6 @@ namespace BezierSurfaces.Mathematics
     // Macierz 3x3 do obrotów
     public readonly struct Matrix3
     {
-        // Elementy macierzy
         public readonly float R11, R12, R13;
         public readonly float R21, R22, R23;
         public readonly float R31, R32, R33;
@@ -20,19 +19,16 @@ namespace BezierSurfaces.Mathematics
             R31 = r31; R32 = r32; R33 = r33;
         }
 
-        // Macierz jednostkowa
         public static readonly Matrix3 Identity = new Matrix3(
             1, 0, 0,
             0, 1, 0,
             0, 0, 1);
 
-        // Buduje macierz z trzech wektorów wstawionych jako kolumny.
         public static Matrix3 FromColumns(Vector3 a, Vector3 b, Vector3 c) => new Matrix3(
             a.X, b.X, c.X,
             a.Y, b.Y, c.Y,
             a.Z, b.Z, c.Z);
 
-        // Kolumny macierzy.
         public Vector3 Column1 => new Vector3(R11, R21, R31);
         public Vector3 Column2 => new Vector3(R12, R22, R32);
         public Vector3 Column3 => new Vector3(R13, R23, R33);
@@ -79,7 +75,7 @@ namespace BezierSurfaces.Mathematics
             return new Vector3(x, y, z);
         }
 
-        // Składa dwa obroty w jeden. Wynik a * b działa jak najpierw obrót b, potem obrót a.
+        // Składa dwa obroty w jeden.
         public static Matrix3 operator *(Matrix3 a, Matrix3 b)
         {
             return new Matrix3(

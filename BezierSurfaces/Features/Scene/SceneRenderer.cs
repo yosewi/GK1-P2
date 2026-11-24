@@ -13,7 +13,6 @@ namespace BezierSurfaces.Features.Scene
     {
         private static readonly Color BackgroundColor = Color.White;
 
-        // Kolory linii kolejnych powierzchni
         private static readonly Color[] SurfaceColors =
         {
             Color.ForestGreen,
@@ -25,7 +24,7 @@ namespace BezierSurfaces.Features.Scene
         // Przezroczystość linii siatki, żeby nie zasłaniały wypełnienia.
         private const int MeshAlpha = 110;
 
-        // Co rysować - ustawiane checkboxami w panelu.
+        // checkboxy z panelu
         public bool ShowFilledTriangles { get; set; }
 
         public bool ShowTriangleMesh { get; set; } = true;
@@ -44,8 +43,6 @@ namespace BezierSurfaces.Features.Scene
             int height = frame.Height;
             ScreenMapper mapper = new ScreenMapper(width, height);
 
-            // Blokujemy bitmapę, żeby szybko pisać piksele
-            // Bitmapa odblokowuje się na końcu bloku using.
             using (FastBitmap pixels = frame.FastLock())
             {
                 pixels.Clear(BackgroundColor);
@@ -57,12 +54,9 @@ namespace BezierSurfaces.Features.Scene
                 }
             }
 
-            // Linie rysujemy dopiero po odblokowaniu bitmapy
             DrawLines(frame, mapper, scene);
         }
 
-        // Wypełnia trójkąty wszystkich powierzchni kolorem z modelu oświetlenia.
-        // Światło jest wspólne, a kolor obiektu (stały albo z tekstury) każda powierzchnia ma swój.
         private static void DrawFilledTriangles(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, SceneModel scene)
         {
             foreach (SceneSurface surface in scene.Surfaces)
@@ -86,7 +80,7 @@ namespace BezierSurfaces.Features.Scene
             return _depthBuffer;
         }
 
-        // Rysuje linie: siatkę trójkątów i wielobok Béziera.
+        // Rysuje siatkę trójkątów i wielobok Béziera.
         private void DrawLines(Bitmap frame, ScreenMapper mapper, SceneModel scene)
         {
             using Graphics g = Graphics.FromImage(frame);
@@ -112,7 +106,6 @@ namespace BezierSurfaces.Features.Scene
                 }
             }
 
-            // Krzywa światła i samo światło na samym wierzchu.
             LightPathDrawer.Draw(g, scene.Light, ShowLightPathPoints);
         }
     }

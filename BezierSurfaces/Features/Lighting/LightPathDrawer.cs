@@ -5,7 +5,6 @@ namespace BezierSurfaces.Features.Lighting
     // Rysuje krzywą, po której porusza się światło, jej punkty kontrolne i bieżące położenie światła.
     public static class LightPathDrawer
     {
-        // Z ilu odcinków prostych składamy rysowaną krzywą.
         private const int CurveSamples = 200;
 
         private const float ControlPointRadius = 4f;
@@ -29,7 +28,6 @@ namespace BezierSurfaces.Features.Lighting
             DrawLight(g, light.Position);
         }
 
-        // Krzywa jako łamana z wielu krótkich odcinków. Ostatni punkt to znowu pierwszy, więc łamana jest zamknięta.
         private static void DrawCurve(Graphics g, LightPath path)
         {
             PointF[] points = new PointF[CurveSamples + 1];
@@ -43,7 +41,6 @@ namespace BezierSurfaces.Features.Lighting
             g.DrawLines(pen, points);
         }
 
-        // Wielobok kontrolny (punkty połączone po kolei w pętlę) i kółka w punktach kontrolnych.
         private static void DrawControlPoints(Graphics g, LightPath path)
         {
             PointF[] points = path.ControlPoints.Select(point => new PointF(point.X, point.Y)).ToArray();
@@ -59,7 +56,6 @@ namespace BezierSurfaces.Features.Lighting
             }
         }
 
-        // Światło jako żółte kółko z czarną obwódką.
         private static void DrawLight(Graphics g, Vector3 position)
         {
             float left = position.X - LightRadius;

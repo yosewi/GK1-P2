@@ -3,7 +3,7 @@ namespace BezierSurfaces.Features.Filling
     // Krawędź z listy aktywnych krawędzi (AET), czyli krawędź przecinana przez bieżącą scan-linię.
     public sealed class ActiveEdge
     {
-        // Numery wierzchołków na górnym i dolnym końcu krawędzi..
+        // Numery wierzchołków na górnym i dolnym końcu krawędzi.
         public int UpperVertex { get; }
         public int LowerVertex { get; }
 

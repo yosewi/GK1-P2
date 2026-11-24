@@ -6,7 +6,6 @@ namespace BezierSurfaces.Features.Triangulation
     // Buduje siatkę trójkątów z powierzchni Beziera
     public static class MeshBuilder
     {
-        // Najmniejsza podział na trójkąty
         public const int MinSteps = 1;
 
         // Dzieli kwadrat parametrów u, v na steps x steps małych kwadratów, a każdy z nich na dwa trójkąty.

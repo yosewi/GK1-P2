@@ -4,21 +4,18 @@ using BezierSurfaces.Mathematics;
 
 namespace BezierSurfaces.Features.Triangulation
 {
-    // Wierzchołek siatki trójkątów. Zrobiłem taki sam jak ten z zadania w sumie
+    // Wierzchołek siatki trójkątów.
     // Trzyma parametry u i v oraz punkt, wektory styczne i wektor normalny przed obrotem i po obrocie.
     public sealed class Vertex
     {
-        // Parametry powierzchni, dla których policzono ten wierzchołek.
         public float U { get; }
         public float V { get; }
 
-        // Wartości przed obrotem: punkt powierzchni, wektory styczne w kierunku u i v oraz wektor normalny.
         public Vector3 Position { get; }
         public Vector3 TangentU { get; }
         public Vector3 TangentV { get; }
         public Vector3 Normal { get; }
 
-        // Te same wartości po obrocie. Tych używamy do rysowania i wypełniania.
         public Vector3 RotatedPosition { get; private set; }
         public Vector3 RotatedTangentU { get; private set; }
         public Vector3 RotatedTangentV { get; private set; }
@@ -41,7 +38,6 @@ namespace BezierSurfaces.Features.Triangulation
         }
 
         // Obraca wierzchołek bieżącym obrotem sceny, zawsze zaczynając od wartości oryginalnych.
-        // Wektory obracamy tą samą macierzą co punkty, bo to sam obrót, bez przesunięcia.
         public void ApplyRotation(SceneOrientation orientation)
         {
             RotatedPosition = orientation.RotatePoint(Position);

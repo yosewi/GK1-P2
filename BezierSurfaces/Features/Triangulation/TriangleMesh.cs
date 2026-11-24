@@ -12,8 +12,7 @@ namespace BezierSurfaces.Features.Triangulation
             Triangles = triangles;
         }
 
-        // Obraca wszystkie wierzchołki siatki. Wspólny wierzchołek jest obracany kilka razy,
-        // ale zawsze z oryginału, więc wynik jest ten sam i jest git
+        // Obraca wszystkie wierzchołki siatki.
         public void ApplyRotation(SceneOrientation orientation)
         {
             foreach (Triangle triangle in Triangles)

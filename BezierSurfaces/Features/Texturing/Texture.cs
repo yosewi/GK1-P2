@@ -4,12 +4,10 @@ using FastBitmapLib;
 namespace BezierSurfaces.Features.Texturing
 {
     // Obrazek, z którego odczytujemy kolor obiektu dla punktu powierzchni o parametrach u, v.
-    // Kolory trzymamy od razu jako wektory (R, G, B) z zakresu 0-1, tak jak w modelu oświetlenia.
     public sealed class Texture
     {
         private readonly Vector3[] _colors;
 
-        // Rozmiar obrazka w pikselach.
         public int Width { get; }
         public int Height { get; }
 
@@ -33,7 +31,6 @@ namespace BezierSurfaces.Features.Texturing
             }
         }
 
-        // Wczytuje teksturę z pliku graficznego
         public static Texture Load(string path)
         {
             using Bitmap image = new Bitmap(path);
@@ -41,7 +38,6 @@ namespace BezierSurfaces.Features.Texturing
         }
 
         // Kolor dla parametrów u, v z przedziału od 0 do 1: u wybiera kolumnę obrazka, v wiersz.
-        // Bierzemy najbliższy piksel.
         public Vector3 Sample(float u, float v)
         {
             int x = Math.Clamp((int)MathF.Round(u * (Width - 1)), 0, Width - 1);
