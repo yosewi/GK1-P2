@@ -14,17 +14,13 @@ namespace BezierSurfaces.Features.Filling
         {
             Vector2[] vertices = { a, b, c };
 
-            // Posortowane numery wierzchołków od najwyższego do najniższego.
             int[] sortedByY = SortIndicesByY(vertices);
 
-            // Lista aktywnych krawędzi (AET).
             List<ActiveEdge> activeEdges = new List<ActiveEdge>();
 
-            // Pierwszy i ostatni wiersz pikseli wewnątrz trójkąta.
             int firstRow = CeilToInt(vertices[sortedByY[0]].Y);
             int lastRow = CeilToInt(vertices[sortedByY[VertexCount - 1]].Y) - 1;
 
-            // Który z posortowanych wierzchołków scan-linia minie jako następny.
             int nextSortedVertex = 0;
 
             // kolejne scan-linie od góry do dołu w pętli.
@@ -124,7 +120,6 @@ namespace BezierSurfaces.Features.Filling
             return new[] { first, second, third };
         }
 
-        // Zaokrąglenie w górę
         private static int CeilToInt(float value) => (int)MathF.Ceiling(value);
     }
 }

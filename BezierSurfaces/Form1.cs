@@ -58,6 +58,8 @@ namespace BezierSurfaces
 
         private void ConnectControls()
         {
+            _controlPanel.DocumentationButton.Click += (sender, e) => ShowDocumentation();
+
             _scene.SetSteps(_controlPanel.StepsTrackBar.Value);
             _controlPanel.StepsTrackBar.ValueChanged += (sender, e) =>
             {
@@ -350,6 +352,53 @@ namespace BezierSurfaces
                 MessageBox.Show($"Could not load surfaces from:\n{path}\n\n{ex.Message}",
                     "Load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // Skróty klawiaturowe. ProcessCmdKey dostaje klawisz przed kontrolkami panelu,
+        // więc np. spacja nie przełącza zaznaczonego checkboxa, tylko animację.
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.F1:
+                    ShowDocumentation();
+                    return true;
+
+                case Keys.Space:
+                    _controlPanel.AnimateLightCheckBox.Checked = !_controlPanel.AnimateLightCheckBox.Checked;
+                    return true;
+
+                case Keys.R:
+                    _scene.Orientation.SetDefaultView();
+                    _canvas.RequestRedraw();
+                    return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void ShowDocumentation()
+        {
+            string text =
+                "Obsługa: przeciąganie lewym przyciskiem myszy obraca scenę (poziomo wokół osi y ekranu, " +
+                "pionowo wokół osi x ekranu), kółko myszy obraca wokół osi z. Lewy przycisk na punkcie " +
+                "kontrolnym krzywej światła przeciąga ten punkt (gdy włączone jest \"Show light curve points\").\n\n" +
+                "Skróty: F1 – dokumentacja, Spacja – zatrzymanie/wznowienie animacji światła, " +
+                "R – powrót do widoku startowego.\n\n" +
+                "Obrót myszą: orientacja to jedna macierz R. Przy każdym ruchu myszy przesunięcie (dx, dy) " +
+                "od poprzedniego zdarzenia daje obroty Ry(0.01·dx) i Rx(0.01·dy), które składamy jako " +
+                "R = Rprzyrost · R. Mnożenie z lewej oznacza obrót wokół osi ekranu, więc przednia część sceny " +
+                "zawsze podąża za kursorem. Po każdym kroku R jest ortonormalizowana, a punkty i wektory " +
+                "obracamy zawsze z wartości oryginalnych.\n\n" +
+                "Rysowanie: siatka trójkątów z podziału kwadratu (u, v), wypełnianie scan-line z sortowaniem " +
+                "wierzchołków, interpolacja barycentryczna z, N i (u, v), Z-bufor, oświetlenie Lamberta " +
+                "ze składową zwierciadlaną dla obu stron powierzchni.\n\n" +
+                "Światło porusza się po zamkniętej krzywej Béziera (V6 = V0) na wysokości z. Kolor obiektu " +
+                "(stały albo tekstura) jest osobny dla każdej powierzchni, a mapa normalnych zmienia N " +
+                "macierzą [Pu, Pv, N].\n\n" +
+                "Więcej szczegółów w README i w komentarzach w kodzie.";
+
+            MessageBox.Show(this, text, "Dokumentacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void RenderFrame()

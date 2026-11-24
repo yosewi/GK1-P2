@@ -15,6 +15,8 @@ namespace BezierSurfaces.UI
         private const int MaxM = 100;
         private const int MaxLightHeight = 1000;
 
+        public Button DocumentationButton { get; }
+
         public TrackBar StepsTrackBar { get; }
 
         public CheckBox BezierPolygonCheckBox { get; }
@@ -48,6 +50,8 @@ namespace BezierSurfaces.UI
             AutoScroll = true;
             Padding = new Padding(8);
             BackColor = SystemColors.Control;
+
+            DocumentationButton = ControlFactory.AddButton(this, "Documentation (F1)", ItemWidth);
 
             ControlFactory.AddHeader(this, "Triangulation");
             StepsTrackBar = ControlFactory.AddTrackBar(this, "Steps",
