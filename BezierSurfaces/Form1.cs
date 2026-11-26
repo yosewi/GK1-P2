@@ -14,6 +14,7 @@ namespace BezierSurfaces
         private static readonly string DefaultSurfacesPath = Path.Combine(AppContext.BaseDirectory, "Data", "surfaces.txt");
         private static readonly string DefaultTexturePath = Path.Combine(AppContext.BaseDirectory, "Data", "bricks.png");
         private static readonly string DefaultNormalMapPath = Path.Combine(AppContext.BaseDirectory, "Data", "normal_4.png");
+        private static readonly string DefaultHeightMapPath = Path.Combine(AppContext.BaseDirectory, "Data", "heightmap_bumps.png");
 
         private readonly RenderCanvas _canvas = new RenderCanvas();
         private readonly ControlPanel _controlPanel = new ControlPanel();
@@ -51,6 +52,7 @@ namespace BezierSurfaces
             LoadSurfaces(DefaultSurfacesPath);
             TryLoadTexture(DefaultTexturePath, _scene.Surfaces);
             TryLoadNormalMap(DefaultNormalMapPath);
+            TryLoadHeightMap(DefaultHeightMapPath);
 
             _canvas.RenderFrame += (sender, e) => RenderFrame();
             _canvas.RequestRedraw();
@@ -114,6 +116,27 @@ namespace BezierSurfaces
                 _canvas.RequestRedraw();
             };
 
+            SetLightType((LightType)_controlPanel.LightTypeComboBox.SelectedIndex);
+            _controlPanel.LightTypeComboBox.SelectedIndexChanged += (sender, e) =>
+            {
+                SetLightType((LightType)_controlPanel.LightTypeComboBox.SelectedIndex);
+                _canvas.RequestRedraw();
+            };
+
+            _scene.Light.ReflectorM = _controlPanel.ReflectorMTrackBar.Value;
+            _controlPanel.ReflectorMTrackBar.ValueChanged += (sender, e) =>
+            {
+                _scene.Light.ReflectorM = _controlPanel.ReflectorMTrackBar.Value;
+                _canvas.RequestRedraw();
+            };
+
+            _scene.Light.SetLightCount(_controlPanel.LightCountTrackBar.Value);
+            _controlPanel.LightCountTrackBar.ValueChanged += (sender, e) =>
+            {
+                _scene.Light.SetLightCount(_controlPanel.LightCountTrackBar.Value);
+                _canvas.RequestRedraw();
+            };
+
             _scene.Light.SetHeight(_controlPanel.LightZTrackBar.Value);
             _controlPanel.LightZTrackBar.ValueChanged += (sender, e) =>
             {
@@ -156,6 +179,14 @@ namespace BezierSurfaces
             _lightPathEditor = editor;
         }
 
+        // Przy świetle kierunkowym liczba świateł i wykładnik nie mają znaczenia, więc wyłączamy te suwaki.
+        private void SetLightType(LightType type)
+        {
+            _scene.Light.Type = type;
+            _controlPanel.LightCountTrackBar.Enabled = type != LightType.Directional;
+            _controlPanel.ReflectorMTrackBar.Enabled = type == LightType.Reflector;
+        }
+
         private void SetLightAnimationRunning(bool running)
         {
             _lightAnimator.IsRunning = running;
@@ -186,14 +217,24 @@ namespace BezierSurfaces
 
         private void ConnectNormalMapControls()
         {
-            _scene.UseNormalMap = _controlPanel.UseNormalMapCheckBox.Checked;
-            _controlPanel.UseNormalMapCheckBox.CheckedChanged += (sender, e) =>
+            _scene.NormalModification = (NormalModification)_controlPanel.NormalModificationComboBox.SelectedIndex;
+            _controlPanel.NormalModificationComboBox.SelectedIndexChanged += (sender, e) =>
             {
-                _scene.UseNormalMap = _controlPanel.UseNormalMapCheckBox.Checked;
+                _scene.NormalModification = (NormalModification)_controlPanel.NormalModificationComboBox.SelectedIndex;
                 _canvas.RequestRedraw();
             };
 
             _controlPanel.LoadNormalMapButton.Click += (sender, e) => LoadNormalMap();
+            _controlPanel.LoadHeightMapButton.Click += (sender, e) => LoadHeightMap();
+
+            _controlPanel.HeightMapKTrackBar.ValueChanged += (sender, e) =>
+            {
+                if (_scene.HeightMap != null)
+                {
+                    _scene.HeightMap.K = _controlPanel.HeightMapKTrackBar.Value;
+                    _canvas.RequestRedraw();
+                }
+            };
         }
 
         private void ChooseLightColor()
@@ -291,7 +332,17 @@ namespace BezierSurfaces
             string? path = AskForImagePath("Load normal map");
             if (path != null && TryLoadNormalMap(path))
             {
-                _controlPanel.UseNormalMapCheckBox.Checked = true;
+                _controlPanel.NormalModificationComboBox.SelectedIndex = (int)NormalModification.NormalMap;
+                _canvas.RequestRedraw();
+            }
+        }
+
+        private void LoadHeightMap()
+        {
+            string? path = AskForImagePath("Load height map");
+            if (path != null && TryLoadHeightMap(path))
+            {
+                _controlPanel.NormalModificationComboBox.SelectedIndex = (int)NormalModification.HeightMap;
                 _canvas.RequestRedraw();
             }
         }
@@ -322,6 +373,15 @@ namespace BezierSurfaces
         private bool TryLoadNormalMap(string path)
         {
             return TryLoadImage(path, "normal map", () => _scene.NormalMap = NormalMap.Load(path));
+        }
+
+        private bool TryLoadHeightMap(string path)
+        {
+            return TryLoadImage(path, "height map", () =>
+            {
+                _scene.HeightMap = HeightMap.Load(path);
+                _scene.HeightMap.K = _controlPanel.HeightMapKTrackBar.Value;
+            });
         }
 
         private bool TryLoadImage(string path, string description, Action load)

@@ -14,18 +14,20 @@ namespace BezierSurfaces.Features.Filling
     {
         // Każdy trójkąt siatki wypełniamy niezależnie.
         public static void Fill(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, TriangleMesh mesh,
-            LightingModel lighting, Vector3 lightPosition, Vector3 objectColor, Texture? texture, NormalMap? normalMap)
+            LightingModel lighting, ActiveLights lights, Vector3 objectColor, Texture? texture, NormalMap? normalMap,
+            HeightMap? heightMap)
         {
             foreach (Triangle triangle in mesh.Triangles)
             {
-                FillTriangle(pixels, depthBuffer, mapper, triangle, lighting, lightPosition, objectColor, texture, normalMap);
+                FillTriangle(pixels, depthBuffer, mapper, triangle, lighting, lights, objectColor, texture, normalMap, heightMap);
             }
         }
 
         // Wypełnia jeden trójkąt. Dla każdego piksela wnętrza wyznacza głębokość i wektor normalny
         // z wartości w wierzchołkach, a potem kolor z modelu oświetlenia.
         private static void FillTriangle(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, Triangle triangle,
-            LightingModel lighting, Vector3 lightPosition, Vector3 objectColor, Texture? texture, NormalMap? normalMap)
+            LightingModel lighting, ActiveLights lights, Vector3 objectColor, Texture? texture, NormalMap? normalMap,
+            HeightMap? heightMap)
         {
             // Wierzchołki po obrocie zamienione na piksele ekranu.
             Vector2 a = mapper.ToScreen(triangle.A.RotatedPosition);
@@ -61,7 +63,8 @@ namespace BezierSurfaces.Features.Filling
             Vector2 parametersA = new Vector2(triangle.A.U, triangle.A.V);
             Vector2 parametersB = new Vector2(triangle.B.U, triangle.B.V);
             Vector2 parametersC = new Vector2(triangle.C.U, triangle.C.V);
-            bool needsParameters = texture != null || normalMap != null;
+            bool needsTangents = normalMap != null || heightMap != null;
+            bool needsParameters = texture != null || needsTangents;
 
             TriangleFiller.Fill(a, b, c, (y, xFrom, xTo) =>
             {
@@ -86,12 +89,20 @@ namespace BezierSurfaces.Features.Filling
 
                     bool isOnOtherSide = normal.Z < 0;
 
-                    // Z mapą normalnych: normalną zmieniamy wektorem odczytanym z mapy w miejscu (u, v).
-                    if (normalMap != null)
+                    // Mapa normalnych albo mapa wysokości zmienia normalną w miejscu (u, v).
+                    if (needsTangents)
                     {
                         Vector3 tangentU = BarycentricCoordinates.Interpolate(weights, tangentUA, tangentUB, tangentUC);
                         Vector3 tangentV = BarycentricCoordinates.Interpolate(weights, tangentVA, tangentVB, tangentVC);
-                        normal = normalMap.Apply(normal, tangentU, tangentV, parameters.X, parameters.Y);
+
+                        if (normalMap != null)
+                        {
+                            normal = normalMap.Apply(normal, tangentU, tangentV, parameters.X, parameters.Y);
+                        }
+                        else if (heightMap != null)
+                        {
+                            normal = heightMap.Apply(normal, tangentU, tangentV, parameters.X, parameters.Y);
+                        }
                     }
 
                     if(isOnOtherSide)
@@ -99,9 +110,8 @@ namespace BezierSurfaces.Features.Filling
                         normal = -normal;
                     }
 
-                    // Punkt sceny widoczny w tym pikselu i kierunek od niego do światła.
+                    // Punkt sceny widoczny w tym pikselu.
                     Vector3 point = mapper.ToWorld(x, y, z);
-                    Vector3 toLight = VectorMath.SafeNormalize(lightPosition - point);
 
                     Vector3 pixelObjectColor = objectColor;
                     if (texture != null)
@@ -109,7 +119,8 @@ namespace BezierSurfaces.Features.Filling
                         pixelObjectColor = texture.Sample(parameters.X, parameters.Y);
                     }
 
-                    Vector3 color = lighting.Compute(normal, toLight, pixelObjectColor);
+                    // Suma po wszystkich światłach
+                    Vector3 color = lighting.Compute(normal, point, lights, pixelObjectColor);
                     pixels.SetPixel(x, y, LightingModel.ToColor(color));
                 }
             });

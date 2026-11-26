@@ -1,4 +1,5 @@
 using System.Drawing.Drawing2D;
+using System.Numerics;
 using FastBitmapLib;
 using BezierSurfaces.Features.Filling;
 using BezierSurfaces.Features.Lighting;
@@ -59,11 +60,13 @@ namespace BezierSurfaces.Features.Scene
 
         private static void DrawFilledTriangles(FastBitmap pixels, DepthBuffer depthBuffer, ScreenMapper mapper, SceneModel scene)
         {
+            ActiveLights lights = scene.Light.GetActiveLights();
+
             foreach (SceneSurface surface in scene.Surfaces)
             {
                 LitMeshFiller.Fill(pixels, depthBuffer, mapper, surface.Mesh,
-                    scene.Lighting, scene.Light.Position, surface.ObjectColor, surface.ActiveTexture,
-                    scene.ActiveNormalMap);
+                    scene.Lighting, lights, surface.ObjectColor, surface.ActiveTexture,
+                    scene.ActiveNormalMap, scene.ActiveHeightMap);
             }
         }
 

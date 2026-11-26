@@ -25,7 +25,10 @@ namespace BezierSurfaces.Features.Lighting
                 DrawControlPoints(g, light.Path);
             }
 
-            DrawLight(g, light.Position);
+            foreach (Vector3 position in light.GetActiveLights().Positions)
+            {
+                DrawLight(g, position);
+            }
         }
 
         private static void DrawCurve(Graphics g, LightPath path)

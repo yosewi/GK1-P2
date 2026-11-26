@@ -1,6 +1,7 @@
 using BezierSurfaces.Features.Scene;
 using BezierSurfaces.Features.Triangulation;
 using BezierSurfaces.Features.Lighting;
+using BezierSurfaces.Features.NormalMapping;
 
 namespace BezierSurfaces.UI
 {
@@ -14,6 +15,9 @@ namespace BezierSurfaces.UI
         private const int MinM = 1;
         private const int MaxM = 100;
         private const int MaxLightHeight = 1000;
+        private const int MinReflectorM = 5;
+        private const int MaxReflectorM = 100;
+        private const int MaxHeightMapK = 100;
 
         public Button DocumentationButton { get; }
 
@@ -28,6 +32,9 @@ namespace BezierSurfaces.UI
         public TrackBar MTrackBar { get; }
         public Button LightColorButton { get; }
 
+        public ComboBox LightTypeComboBox { get; }
+        public TrackBar ReflectorMTrackBar { get; }
+        public TrackBar LightCountTrackBar { get; }
         public TrackBar LightZTrackBar { get; }
         public CheckBox AnimateLightCheckBox { get; }
         public CheckBox ShowLightCurveCheckBox { get; }
@@ -38,8 +45,10 @@ namespace BezierSurfaces.UI
         public RadioButton TextureRadioButton { get; }
         public Button LoadTextureButton { get; }
 
-        public CheckBox UseNormalMapCheckBox { get; }
+        public ComboBox NormalModificationComboBox { get; }
         public Button LoadNormalMapButton { get; }
+        public Button LoadHeightMapButton { get; }
+        public TrackBar HeightMapKTrackBar { get; }
 
         public ControlPanel()
         {
@@ -72,6 +81,13 @@ namespace BezierSurfaces.UI
             LightColorButton = ControlFactory.AddButton(this, "Light color...", ItemWidth);
 
             ControlFactory.AddHeader(this, "Light source");
+            LightTypeComboBox = ControlFactory.AddComboBox(this, ItemWidth);
+            LightTypeComboBox.Items.AddRange(new object[] { "Directional (L = 0, 0, 1)", "Point lights", "Reflectors → (0, 0, 0)" });
+            LightTypeComboBox.SelectedIndex = (int)LightType.Point;
+            ReflectorMTrackBar = ControlFactory.AddTrackBar(this, "Reflector m (cos^m α)", MinReflectorM, MaxReflectorM,
+                LightSource.DefaultReflectorM, ItemWidth, FormatInteger);
+            LightCountTrackBar = ControlFactory.AddTrackBar(this, "Number of lights",
+                LightSource.MinLightCount, LightSource.MaxLightCount, LightSource.MinLightCount, ItemWidth, FormatInteger);
             LightZTrackBar = ControlFactory.AddTrackBar(this, "Light Z", 0, MaxLightHeight,
                 LightSource.DefaultHeight, ItemWidth, FormatInteger);
             AnimateLightCheckBox = ControlFactory.AddCheckBox(this, "Animate light", true);
@@ -84,9 +100,14 @@ namespace BezierSurfaces.UI
             TextureRadioButton = ControlFactory.AddRadioButton(this, "Texture", false);
             LoadTextureButton = ControlFactory.AddButton(this, "Load texture...", ItemWidth);
 
-            ControlFactory.AddHeader(this, "Normal map");
-            UseNormalMapCheckBox = ControlFactory.AddCheckBox(this, "Use normal map", false);
+            ControlFactory.AddHeader(this, "Normal vector modification");
+            NormalModificationComboBox = ControlFactory.AddComboBox(this, ItemWidth);
+            NormalModificationComboBox.Items.AddRange(new object[] { "None", "Normal map", "Height map" });
+            NormalModificationComboBox.SelectedIndex = (int)NormalModification.None;
             LoadNormalMapButton = ControlFactory.AddButton(this, "Load normal map...", ItemWidth);
+            LoadHeightMapButton = ControlFactory.AddButton(this, "Load height map...", ItemWidth);
+            HeightMapKTrackBar = ControlFactory.AddTrackBar(this, "Height map k", 0, MaxHeightMapK,
+                HeightMap.DefaultK, ItemWidth, FormatInteger);
         }
 
         public static float FromHundredths(int value) => value / 100f;

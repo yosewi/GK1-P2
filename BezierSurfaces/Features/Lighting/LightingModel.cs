@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using BezierSurfaces.Mathematics;
 
 namespace BezierSurfaces.Features.Lighting
 {
@@ -24,7 +25,13 @@ namespace BezierSurfaces.Features.Lighting
         {
             float normalDotLight = Vector3.Dot(normal, toLight); // cos(N, L)
 
-            float diffuse = MathF.Max(0, normalDotLight);
+            // Światło jest za powierzchnią więc nie dociera do tej strony, więc nie ma ani rozproszenia, ani odblasku.
+            if (normalDotLight <= 0)
+            {
+                return Vector3.Zero;
+            }
+
+            float diffuse = normalDotLight;
 
             // Kierunek, w którym światło odbija się od powierzchni.
             Vector3 reflected = 2 * normalDotLight * normal - toLight;
@@ -34,6 +41,24 @@ namespace BezierSurfaces.Features.Lighting
 
             Vector3 lightTimesObject = LightColor * objectColor;
             return Kd * diffuse * lightTimesObject + Ks * specular * lightTimesObject;
+        }
+
+        // Kolor punktu oświetlonego wszystkimi światłami
+        public Vector3 Compute(Vector3 normal, Vector3 point, ActiveLights lights, Vector3 objectColor)
+        {   
+            if (lights.Type == LightType.Directional)
+            {
+                return Compute(normal, ActiveLights.DirectionalL, objectColor);
+            }
+
+            Vector3 sum = Vector3.Zero;
+            for (int index = 0; index < lights.Positions.Count; index++)
+            {
+                Vector3 toLight = VectorMath.SafeNormalize(lights.Positions[index] - point);
+                sum += lights.ReflectorFactor(index, toLight) * Compute(normal, toLight, objectColor);
+            }
+
+            return sum;
         }
 
         public static Color ToColor(Vector3 color)

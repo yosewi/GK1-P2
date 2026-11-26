@@ -31,9 +31,13 @@ namespace BezierSurfaces.Features.Scene
 
         public NormalMap? NormalMap { get; set; }
 
-        public bool UseNormalMap { get; set; }
+        public HeightMap? HeightMap { get; set; }
 
-        public NormalMap? ActiveNormalMap => UseNormalMap ? NormalMap : null;
+        public NormalModification NormalModification { get; set; } = NormalModification.None;
+
+        public NormalMap? ActiveNormalMap => NormalModification == NormalModification.NormalMap ? NormalMap : null;
+
+        public HeightMap? ActiveHeightMap => NormalModification == NormalModification.HeightMap ? HeightMap : null;
 
         // Zastępuje powierzchnie nowymi i od razu buduje dla nich siatki.
         public void SetSurfaces(IEnumerable<BezierSurface> surfaces)
